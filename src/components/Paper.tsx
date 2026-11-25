@@ -1,6 +1,7 @@
 import type { ThreeElements } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
 import { ExtrudeGeometry } from 'three'
+import { hashSeed, roughenOutlines } from '../math/rough-edges'
 import {
   fitOutlines,
   outlinesFromSvg,
@@ -24,7 +25,17 @@ export interface PaperProps extends Omit<ThreeElements['group'], 'children'> {
   height?: number
   /** `bottom`: el origen está en el centro del borde inferior. */
   anchor?: Anchor
+  /**
+   * Irregularidad del borde, en unidades del mundo (0 o `false` = borde
+   * perfecto). Simula un recorte a tijera.
+   */
+  roughEdges?: number | false
+  /** Semilla del borde irregular; por defecto depende de la forma. */
+  seed?: number
 }
+
+/** Irregularidad por defecto del borde: ~0,6 mm si la página mide 20 cm. */
+export const DEFAULT_ROUGH_EDGES = 0.003
 
 /** Grosor por defecto: una cartulina de ~1,5 mm si la página mide 20 cm. */
 export const DEFAULT_PAPER_DEPTH = 0.0075
@@ -41,11 +52,20 @@ export function Paper({
   width,
   height,
   anchor = 'bottom',
+  roughEdges = DEFAULT_ROUGH_EDGES,
+  seed,
   ...group
 }: PaperProps) {
   const geometry = useMemo(() => {
     const raw = outlinesProp ?? (src ? outlinesFromSvg(src) : [])
-    const fitted = fitOutlines(raw, { width, height, anchor })
+    let fitted = fitOutlines(raw, { width, height, anchor })
+    if (roughEdges) {
+      fitted = roughenOutlines(fitted, {
+        amount: roughEdges,
+        // Dos piezas con la misma forma pero distinto tamaño no se recortan igual.
+        seed: seed ?? hashSeed(src ?? '') + Math.round((width ?? height ?? 1) * 1000),
+      })
+    }
     const extruded = new ExtrudeGeometry(fitted.map(shapeFromOutline), {
       depth,
       bevelEnabled: false,
@@ -53,7 +73,7 @@ export function Paper({
     })
     extruded.translate(0, 0, -depth / 2)
     return extruded
-  }, [src, outlinesProp, width, height, anchor, depth])
+  }, [src, outlinesProp, width, height, anchor, depth, roughEdges, seed])
 
   useEffect(() => () => geometry.dispose(), [geometry])
 
