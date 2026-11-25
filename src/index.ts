@@ -11,6 +11,8 @@ export { bounds, fitOutlines, outlinesFromSvg, shapeFromOutline } from './paper/
 export type { Anchor, FitOptions, Outline, Point } from './paper/outline'
 export { EDGE_SHADE, paperGrain, paperMaterials } from './materials/paper'
 export type { PaperMaterials } from './materials/paper'
+export { PaperLights } from './components/PaperLights'
+export type { PaperLightsProps } from './components/PaperLights'
 export { PliegoCanvas } from './components/PliegoCanvas'
 export type { PliegoCanvasProps } from './components/PliegoCanvas'
 export { Spread, useSpreadTheta } from './components/Spread'
