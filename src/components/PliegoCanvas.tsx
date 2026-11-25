@@ -1,7 +1,7 @@
 import { Canvas, useThree, type CanvasProps } from '@react-three/fiber'
-import { ContactShadows } from '@react-three/drei'
 import { useLayoutEffect, type ReactNode } from 'react'
 import { PCFShadowMap } from 'three'
+import { PaperLights, type PaperLightsProps } from './PaperLights'
 
 type Vec3 = [number, number, number]
 
@@ -15,6 +15,8 @@ export interface PliegoCanvasProps extends Omit<CanvasProps, 'children' | 'camer
   target?: Vec3
   /** Campo de visión vertical, en grados. */
   fov?: number
+  /** Ajustes de la luz principal y de las sombras. */
+  lights?: PaperLightsProps
 }
 
 function LookAt({ target }: { target: Vec3 }) {
@@ -37,6 +39,7 @@ export function PliegoCanvas({
   cameraPosition = [0, 2.6, 2.3],
   target = [0, 0, 0.1],
   fov = 40,
+  lights,
   ...props
 }: PliegoCanvasProps) {
   return (
@@ -48,21 +51,8 @@ export function PliegoCanvas({
     >
       <LookAt target={target} />
       <color attach="background" args={[background]} />
-      <ambientLight intensity={0.6} />
-      <directionalLight
-        position={[1.5, 4, 2]}
-        intensity={2.2}
-        color="#fff4e0"
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0004}
-        shadow-camera-left={-3}
-        shadow-camera-right={3}
-        shadow-camera-top={3}
-        shadow-camera-bottom={-3}
-      />
+      <PaperLights {...lights} />
       {children}
-      <ContactShadows position={[0, -0.001, 0]} opacity={0.4} blur={2.4} scale={6} far={1.5} />
     </Canvas>
   )
 }

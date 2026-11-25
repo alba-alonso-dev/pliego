@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.1**: un libro de cartulina con hojas rígidas que se pasan con las flechas, el teclado o arrastrando. Las escenas pop-up llegan en la v0.3.
+Versión **0.2**: un libro de cartulina con hojas que se pasan con las flechas, el teclado o arrastrando, y escenas hechas con piezas recortadas desde SVG, con grano de papel, bordes irregulares y sombras suaves. El despliegue pop-up llega en la v0.3.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -33,18 +33,21 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.1.0
+npm install github:alba-alonso-dev/pliego#v0.2.0
 ```
 
 ```tsx
-import { Book, BookArrows, PliegoCanvas, Spread } from 'pliego'
+import { Book, BookArrows, Paper, PliegoCanvas, Spread } from 'pliego'
+import casa from './formas/casa.svg?raw'
 
 export function App() {
   return (
     <>
       <PliegoCanvas>
         <Book size={[1, 1.4]} coverColor="#b5543c">
-          <Spread id="energia">{/* piezas de la escena */}</Spread>
+          <Spread id="energia">
+            <Paper src={casa} height={0.4} position={[0.3, 0, 0]} color="#d98e6a" />
+          </Spread>
           <Spread id="comida">{/* … */}</Spread>
         </Book>
       </PliegoCanvas>
@@ -59,8 +62,13 @@ export function App() {
 | `<PliegoCanvas>` | Lienzo 3D con cámara, luz y sombras                                                          |
 | `<Book>`         | El libro: una hoja por cada `<Spread>`. Props `size`, `thickness`, colores y navegación      |
 | `<Spread id>`    | Escena de una doble página; el lomo está en `x = 0`. El `id` es también el `#hash` de la URL |
+| `<Paper src>`    | Pieza de cartulina recortada desde un SVG, con grosor, grano y bordes irregulares            |
 | `<BookArrows>`   | Flechas HTML accesibles, fuera del lienzo                                                    |
 | `useBook()`      | `{ current, count, next, prev, goTo, goToId, … }` para hacer tus propios controles           |
+
+`<Paper>` acepta `width` o `height` (tamaño final), `color`, `depth` (grosor), `anchor` (`bottom` para piezas de pie, `center`) y `roughEdges` (irregularidad del borde; `false` para un borde perfecto). Cada `<path>`, `<rect>` o `<polygon>` relleno del SVG es una pieza; los huecos interiores se respetan.
+
+La luz se ajusta con `<PliegoCanvas lights={{ position, intensity, color, softness, contactShadow }}>`.
 
 `<Book>` activa por defecto el teclado, el hash en la URL y el arrastre; se desactivan con `keyboard={false}`, `hash={false}` o `drag={false}`.
 

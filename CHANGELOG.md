@@ -3,6 +3,19 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.2.0] - 2026-11-25
+
+### Añadido
+
+- `<Paper>`: piezas de cartulina recortadas desde un SVG (texto importado con `?raw`), escaladas con `width` o `height`, con huecos y con el grosor de una cartulina.
+- Bordes irregulares, como recortados a tijera, con semilla para que cada pieza salga siempre igual (`roughEdges`).
+- Material de papel: grano procedural generado por código como normalMap, sin imágenes, y cantos más oscuros. Lo usan también las hojas y las tapas.
+- `<PaperLights>`: luz cálida con sombras de borde suave, luz de cielo y suelo, y sombra de contacto bajo el libro. Se ajusta con la prop `lights` de `<PliegoCanvas>`.
+
+### Cambiado
+
+- El playground usa formas SVG (casas, árboles, colinas, un molino y nubes).
+
 ## [0.1.0] - 2026-11-25
 
 ### Añadido

@@ -10,6 +10,7 @@ import {
 } from 'react'
 import type { Group } from 'three'
 import type { Thicknesses } from '../math/book'
+import { paperMaterials } from '../materials/paper'
 import { clamp } from '../math/easing'
 import { useBookStore } from '../store'
 import { animateTo } from '../turn'
@@ -99,9 +100,13 @@ export function Book({
     <BookContext.Provider value={context}>
       <group ref={body}>
         {/* Contratapa: la base fija bajo la pila de la derecha. */}
-        <mesh position={[width / 2, thickness.cover / 2, 0]} castShadow receiveShadow>
+        <mesh
+          position={[width / 2, thickness.cover / 2, 0]}
+          material={paperMaterials(coverColor).face}
+          castShadow
+          receiveShadow
+        >
           <boxGeometry args={[width, thickness.cover, height]} />
-          <meshStandardMaterial color={coverColor} roughness={0.85} />
         </mesh>
 
         {spreads.map((spread, i) => (
