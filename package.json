@@ -1,6 +1,6 @@
 {
   "name": "pliego",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Motor de libros pop-up 3D en estilo papercraft para React y React Three Fiber",
   "author": "Alba Alonso",
   "license": "MIT",
