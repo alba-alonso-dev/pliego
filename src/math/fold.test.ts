@@ -9,7 +9,11 @@ describe('elevation', () => {
 
   it('respeta el ángulo final de cada pieza', () => {
     expect(elevation(180, 70)).toBe(70)
-    expect(elevation(90, 70)).toBeCloseTo(35)
+  })
+
+  it('con la hoja a 90° la pieza ya está casi tumbada', () => {
+    expect(elevation(90)).toBeLessThan(20)
+    expect(elevation(90)).toBeGreaterThan(0)
   })
 
   it('sube a medida que el libro se abre, sin bajar nunca', () => {

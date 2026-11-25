@@ -2,8 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { paperMaterials } from '../materials/paper'
 import type { Group } from 'three'
-import { leafAngle, leafProgress, leafThickness, leftStackY, rightStackY } from '../math/book'
-import { lerp } from '../math/easing'
+import { leafPose, leafThickness } from '../math/book'
 import { useBookStore } from '../store'
 import { useBookContext } from './context'
 
@@ -30,16 +29,9 @@ export function Leaf({ index, front, back, edge }: LeafProps) {
   useFrame(() => {
     const group = pivot.current
     if (!group) return
-    const { position } = useBookStore.getState()
-    const progress = leafProgress(position, index)
-    group.rotation.z = leafAngle(position, index)
-    group.position.y = lerp(
-      rightStackY(index, count, thickness),
-      leftStackY(index, thickness),
-      progress,
-    )
-    // Mientras gira, se eleva un poco para no atravesar las otras hojas.
-    group.position.y += Math.sin(progress * Math.PI) * 0.02
+    const pose = leafPose(useBookStore.getState().position, index, count, thickness)
+    group.rotation.z = pose.angle
+    group.position.y = pose.y
   })
 
   // Orden de materiales de BoxGeometry: +x, -x, +y, -y, +z, -z.

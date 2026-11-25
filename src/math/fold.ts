@@ -25,9 +25,16 @@ export function unfoldProgress(theta: number, delay = 0): number {
   return clamp((opened - d) / (1 - d))
 }
 
-/** Elevación φ en grados: φ = angle · ease(progreso). */
+/**
+ * Sesgo de la curva de despliegue (> 1): con la hoja a 90° las piezas ya
+ * están casi tumbadas, como en un pop-up de papel, en vez de sobresalir
+ * de la página que gira.
+ */
+export const FOLD_BIAS = 2
+
+/** Elevación φ en grados: φ = angle · ease(progreso ^ FOLD_BIAS). */
 export function elevation(theta: number, angle = 90, delay = 0): number {
-  return angle * easeInOutCubic(unfoldProgress(theta, delay))
+  return angle * easeInOutCubic(unfoldProgress(theta, delay) ** FOLD_BIAS)
 }
 
 /**

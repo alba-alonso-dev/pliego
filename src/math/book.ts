@@ -54,6 +54,59 @@ export function leftStackY(leaf: number, t: Thicknesses): number {
   return sumThickness(0, leaf, t) + leafThickness(leaf, t) / 2
 }
 
+/** Cuánto se eleva una hoja a mitad de giro para no rozar las demás. */
+export const TURN_LIFT = 0.02
+
+export interface LeafPose {
+  /** Giro sobre el lomo en radianes: 0 a la derecha, π a la izquierda. */
+  angle: number
+  /** Altura del centro de la hoja. */
+  y: number
+  /** Grosor de la hoja. */
+  thickness: number
+}
+
+/** Dónde está la hoja `leaf` para una posición del libro. */
+export function leafPose(position: number, leaf: number, count: number, t: Thicknesses): LeafPose {
+  const progress = leafProgress(position, leaf)
+  const y =
+    rightStackY(leaf, count, t) +
+    (leftStackY(leaf, t) - rightStackY(leaf, count, t)) * progress +
+    Math.sin(progress * Math.PI) * TURN_LIFT
+  return { angle: leafAngle(position, leaf), y, thickness: leafThickness(leaf, t) }
+}
+
+export interface PageFrame {
+  /** Giro del marco de la página sobre el lomo (0 = plana en su lado). */
+  rotation: number
+  /** Altura del lomo para el marco. */
+  y: number
+  /** Distancia del eje del marco a la superficie de la página. */
+  surface: number
+}
+
+/**
+ * Marco de referencia de una de las dos páginas del spread `spread`: las
+ * piezas pop-up se pegan a él para girar con su página al pasar la hoja.
+ * La página izquierda es la hoja `spread`; la derecha, la hoja `spread + 1`
+ * o la contratapa en el último spread.
+ */
+export function pageFrame(
+  position: number,
+  spread: number,
+  side: 'left' | 'right',
+  count: number,
+  t: Thicknesses,
+): PageFrame {
+  if (side === 'left') {
+    const pose = leafPose(position, spread, count, t)
+    return { rotation: pose.angle - Math.PI, y: pose.y, surface: pose.thickness / 2 }
+  }
+  if (spread + 1 >= count) return { rotation: 0, y: t.cover / 2, surface: t.cover / 2 }
+  const pose = leafPose(position, spread + 1, count, t)
+  return { rotation: pose.angle, y: pose.y, surface: pose.thickness / 2 }
+}
+
 /**
  * Ángulo de apertura del spread `spread` en grados: 0 cerrado, 180 plano.
  * Es el ángulo entre su página izquierda (hoja `spread`) y su página
