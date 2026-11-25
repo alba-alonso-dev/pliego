@@ -1,5 +1,8 @@
 import { Line } from '@react-three/drei'
-import { useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { useMemo, useRef, type ComponentRef } from 'react'
+import { DEFAULT_REVEAL, revealProgress, visibleSegments, type RevealTiming } from '../math/reveal'
+import { prefersReducedMotion } from '../motion'
 import {
   fitStrokes,
   pickSource,
@@ -9,6 +12,7 @@ import {
 } from '../paper/strokes'
 import { useBookStore } from '../store'
 import { OnPage } from './OnPage'
+import { useSpread } from './Spread'
 
 export interface HandDrawnProps {
   /** Texto de un SVG de trazos (importado con `?raw`), o uno por idioma. */
@@ -29,6 +33,12 @@ export interface HandDrawnProps {
   color?: string
   /** Grosor del trazo en unidades del mundo. */
   lineWidth?: number
+  /**
+   * Dibujar el trazo poco a poco al abrir el spread, como si lo hiciera una
+   * mano. `true` usa el ritmo por defecto; también admite `{ duration, delay }`
+   * en segundos.
+   */
+  reveal?: boolean | Partial<RevealTiming>
 }
 
 /** Altura de la tinta sobre el papel, para que no parpadee con él. */
@@ -36,6 +46,9 @@ export const INK_LIFT = 0.0008
 
 /** Distancia máxima entre puntos del trazo, en unidades del mundo. */
 const STROKE_STEP = 0.004
+
+/** Por debajo de esta apertura (grados) el spread no se ve y el dibujo se borra. */
+const RESET_BELOW = 3
 
 /**
  * Trazo a mano pegado sobre el papel: un SVG de líneas (anotaciones,
@@ -52,6 +65,7 @@ export function HandDrawn({
   rotate = 0,
   color = '#2b2420',
   lineWidth = 0.004,
+  reveal = false,
 }: HandDrawnProps) {
   const lang = useBookStore((state) => state.lang)
   const svg = pickSource(src, lang)
@@ -65,6 +79,29 @@ export function HandDrawn({
       }).map((stroke) => resample(stroke, STROKE_STEP)),
     [svg, width, height],
   )
+  const segments = useMemo(() => strokes.map((stroke) => stroke.length - 1), [strokes])
+
+  // Revelado: avanza mientras el spread está abierto y quieto; se queda
+  // dibujado al pasar la hoja y se borra cuando el spread deja de verse.
+  const { theta, isOpen } = useSpread()
+  const lines = useRef<(ComponentRef<typeof Line> | null)[]>([])
+  const elapsed = useRef(0)
+  const timing: RevealTiming | null =
+    reveal === false ? null : { ...DEFAULT_REVEAL, ...(reveal === true ? {} : reveal) }
+
+  useFrame((_, delta) => {
+    if (!timing) return
+    if (theta() < RESET_BELOW) elapsed.current = 0
+    else if (isOpen() && !useBookStore.getState().turning) elapsed.current += delta
+    const progress = prefersReducedMotion() ? 1 : revealProgress(elapsed.current, timing)
+    const shown = visibleSegments(segments, progress)
+    lines.current.forEach((line, i) => {
+      if (!line) return
+      const count = shown[i] ?? 0
+      line.visible = count > 0
+      line.geometry.instanceCount = count
+    })
+  })
 
   return (
     <OnPage side={page} lift={INK_LIFT}>
@@ -74,10 +111,14 @@ export function HandDrawn({
           {strokes.map((stroke, i) => (
             <Line
               key={i}
+              ref={(line) => {
+                lines.current[i] = line
+              }}
               points={stroke.map(([px, py]) => [px, py, 0] as [number, number, number])}
               color={color}
               lineWidth={lineWidth}
               worldUnits
+              visible={!timing}
             />
           ))}
         </group>

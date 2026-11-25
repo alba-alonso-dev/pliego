@@ -1,6 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { damping, parallaxOffset, tiltToPointer } from '../math/parallax'
+import { prefersReducedMotion } from '../motion'
 
 type Vec3 = [number, number, number]
 
@@ -9,12 +10,6 @@ export interface CameraRigProps {
   target: Vec3
   /** Recorrido máximo del parallax en unidades del mundo; 0 lo desactiva. */
   parallax: number
-}
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
 }
 
 /**

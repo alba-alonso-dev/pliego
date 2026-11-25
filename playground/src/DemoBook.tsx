@@ -26,12 +26,12 @@ export function DemoBook() {
         <PopUp at={0.1} x={0.45}>
           <Paper src={arbol} height={0.45} color="#5b8e7d" />
         </PopUp>
-        <HandDrawn src={pajaros} x={-0.55} at={-0.45} width={0.3} />
-        <HandDrawn src={flecha} x={-0.3} at={0.38} width={0.32} />
+        <HandDrawn src={pajaros} x={-0.55} at={-0.45} width={0.3} reveal />
+        <HandDrawn src={flecha} x={-0.3} at={0.38} width={0.32} reveal={{ delay: 1 }} />
       </Spread>
 
       <Spread id="colinas">
-        <HandDrawn src={sol} x={-0.78} at={-0.52} width={0.2} />
+        <HandDrawn src={sol} x={-0.78} at={-0.52} width={0.2} reveal />
         <PopUp at={-0.4} x={0.3}>
           <Paper src={molino} height={0.7} color="#fbf7ee" />
         </PopUp>

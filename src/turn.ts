@@ -1,14 +1,9 @@
 import gsap from 'gsap'
 import { turnDuration } from './math/book'
+import { prefersReducedMotion } from './motion'
 import { useBookStore } from './store'
 
 let tween: gsap.core.Tween | null = null
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
-}
 
 /** Detiene la animación en curso (por ejemplo, al empezar a arrastrar). */
 export function stopTurn(): void {
