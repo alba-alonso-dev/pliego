@@ -1,4 +1,4 @@
-import { clamp, easeInOutCubic } from './easing'
+import { clamp } from './easing'
 
 /**
  * Matemática del pop-up.
@@ -7,34 +7,34 @@ import { clamp, easeInOutCubic } from './easing'
  * 180 plano. Cada pieza pop-up tiene una elevación φ (phi), también en
  * grados: 0 tumbada sobre la página y `angle` de pie.
  *
- * Como en un pop-up de papel, la pieza se levanta a medida que el libro se
- * abre. Con un retardo, unas piezas esperan a que el spread esté más
- * abierto antes de empezar a subir: así se levantan por capas.
+ * Como en un pop-up de papel, la pieza se levanta a la vez que el libro se
+ * abre, desde el primer grado: aparece y desaparece con el paso de la hoja,
+ * sin esperar tumbada. Las piezas con retardo suben algo más despacio al
+ * principio y alcanzan a las demás al final, así se levantan por capas.
  */
 
-/** Retardo máximo por profundidad: las piezas del frente esperan hasta el 35 % de la apertura. */
-export const MAX_DEPTH_DELAY = 0.35
+/** Retardo máximo por profundidad (las piezas del frente). */
+export const MAX_DEPTH_DELAY = 0.2
 
 /**
- * Fracción (0–1) del despliegue de una pieza para una apertura θ, con un
- * retardo `delay` (0–1): la pieza no empieza a subir hasta θ/180 = delay.
+ * Sesgo de la curva de despliegue (≥ 1): las piezas van un poco por detrás
+ * de la apertura para no sobresalir de la hoja que gira.
+ */
+export const FOLD_BIAS = 1.3
+
+/**
+ * Fracción (0–1) del despliegue de una pieza para una apertura θ. El
+ * retardo `delay` (0–1) no la deja quieta: solo hace la curva más tardía,
+ * de modo que sigue moviéndose con la hoja y termina igual de pie.
  */
 export function unfoldProgress(theta: number, delay = 0): number {
   const opened = clamp(theta / 180)
-  const d = clamp(delay, 0, 0.95)
-  return clamp((opened - d) / (1 - d))
+  return opened ** (FOLD_BIAS * (1 + 2 * clamp(delay)))
 }
 
-/**
- * Sesgo de la curva de despliegue (> 1): con la hoja a 90° las piezas ya
- * están casi tumbadas, como en un pop-up de papel, en vez de sobresalir
- * de la página que gira.
- */
-export const FOLD_BIAS = 2
-
-/** Elevación φ en grados: φ = angle · ease(progreso ^ FOLD_BIAS). */
+/** Elevación φ en grados: φ = angle · progreso. */
 export function elevation(theta: number, angle = 90, delay = 0): number {
-  return angle * easeInOutCubic(unfoldProgress(theta, delay) ** FOLD_BIAS)
+  return angle * unfoldProgress(theta, delay)
 }
 
 /**
