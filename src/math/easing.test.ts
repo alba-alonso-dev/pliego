@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clamp, easeInOutCubic, easeOutCubic, lerp } from './easing'
+import { clamp, easeInOutCubic, easeInOutSine, easeOutCubic, lerp } from './easing'
 
 describe('clamp', () => {
   it('limita al intervalo [0, 1] por defecto', () => {
@@ -23,6 +23,7 @@ describe('lerp', () => {
 
 describe.each([
   ['easeInOutCubic', easeInOutCubic],
+  ['easeInOutSine', easeInOutSine],
   ['easeOutCubic', easeOutCubic],
 ])('%s', (_name, ease) => {
   it('empieza en 0 y termina en 1', () => {
@@ -47,4 +48,10 @@ describe.each([
 
 it('easeInOutCubic pasa por el centro', () => {
   expect(easeInOutCubic(0.5)).toBeCloseTo(0.5)
+})
+
+it('easeInOutSine pasa por el centro con menos acelerón que la cúbica', () => {
+  expect(easeInOutSine(0.5)).toBeCloseTo(0.5)
+  const slope = (ease: (t: number) => number) => (ease(0.51) - ease(0.49)) / 0.02
+  expect(slope(easeInOutSine)).toBeLessThan(slope(easeInOutCubic))
 })

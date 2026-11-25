@@ -83,6 +83,11 @@ describe('turnDuration', () => {
     expect(turnDuration(0, 1)).toBeLessThan(turnDuration(0, 3))
     expect(turnDuration(0, 20)).toBe(turnDuration(0, 6))
   })
+
+  it('una hoja tarda algo más de un segundo, sin prisa', () => {
+    expect(turnDuration(1, 2)).toBeGreaterThan(1)
+    expect(turnDuration(1, 2)).toBeLessThan(1.4)
+  })
 })
 
 describe('pageFrame', () => {

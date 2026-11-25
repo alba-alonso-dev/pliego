@@ -1,4 +1,4 @@
-import { clamp, easeInOutCubic } from './easing'
+import { clamp, easeInOutSine } from './easing'
 
 /**
  * Modelo físico del libro.
@@ -17,9 +17,12 @@ export function leafProgress(position: number, leaf: number): number {
   return clamp(position - leaf)
 }
 
-/** Ángulo de la hoja en radianes, con arranque y frenada suaves. */
+/**
+ * Ángulo de la hoja en radianes, con arranque y frenada suaves. La curva
+ * de seno evita que la hoja dé un acelerón a mitad del giro.
+ */
 export function leafAngle(position: number, leaf: number): number {
-  return easeInOutCubic(leafProgress(position, leaf)) * Math.PI
+  return easeInOutSine(leafProgress(position, leaf)) * Math.PI
 }
 
 export interface Thicknesses {
@@ -132,5 +135,5 @@ export function spreadSurfaceY(spread: number, count: number, t: Thicknesses): n
 export function turnDuration(from: number, to: number): number {
   const distance = Math.abs(to - from)
   if (distance === 0) return 0
-  return 0.6 + 0.25 * Math.min(distance, 6)
+  return 0.85 + 0.3 * Math.min(distance, 6)
 }
