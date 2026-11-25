@@ -38,7 +38,7 @@ export function outlinesFromSvg(svg: string): Outline[] {
     const style = path.userData?.style as { fill?: string } | undefined
     const fill = style?.fill
     if (fill === 'none' || fill === 'transparent') continue
-    for (const shape of SVGLoader.createShapes(path)) {
+    for (const shape of path.toShapes()) {
       const { shape: contour, holes } = shape.extractPoints(CURVE_DIVISIONS)
       outlines.push({
         contour: toPoints(contour),
