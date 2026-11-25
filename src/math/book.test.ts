@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   leafAngle,
   leafProgress,
+  pageFrame,
   leftStackY,
   rightStackY,
   spreadSurfaceY,
@@ -81,5 +82,34 @@ describe('turnDuration', () => {
   it('tarda más cuantas más hojas hay que pasar, con un tope', () => {
     expect(turnDuration(0, 1)).toBeLessThan(turnDuration(0, 3))
     expect(turnDuration(0, 20)).toBe(turnDuration(0, 6))
+  })
+})
+
+describe('pageFrame', () => {
+  const count = 3
+
+  it('con el spread abierto, las dos páginas están planas en su lado', () => {
+    const left = pageFrame(1, 0, 'left', count, t)
+    const right = pageFrame(1, 0, 'right', count, t)
+    expect(left.rotation).toBeCloseTo(0)
+    expect(right.rotation).toBeCloseTo(0)
+    expect(left.y + left.surface).toBeCloseTo(t.cover)
+    expect(right.y + right.surface).toBeCloseTo(t.cover + 2 * t.page)
+  })
+
+  it('al pasar la hoja, la página derecha gira con ella', () => {
+    const right = pageFrame(1.5, 0, 'right', count, t)
+    expect(right.rotation).toBeCloseTo(leafAngle(1.5, 1))
+    expect(right.rotation).toBeGreaterThan(0)
+  })
+
+  it('al volver atrás, la página izquierda se levanta', () => {
+    expect(pageFrame(0.5, 0, 'left', count, t).rotation).toBeLessThan(0)
+  })
+
+  it('en el último spread la página derecha es la contratapa, que no gira', () => {
+    const right = pageFrame(2.5, count - 1, 'right', count, t)
+    expect(right.rotation).toBe(0)
+    expect(right.y + right.surface).toBeCloseTo(t.cover)
   })
 })

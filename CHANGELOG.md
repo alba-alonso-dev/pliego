@@ -3,6 +3,25 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.3.0] - 2026-11-25
+
+### Añadido
+
+- `<PopUp at x angle delay>`: las piezas se levantan según el ángulo de apertura del spread, las del fondo antes que las del frente, y van pegadas a su página: al pasar la hoja giran con ella mientras se pliegan encima.
+- Matemática del pliegue en `math/fold.ts` (`elevation`, `depthDelay`…) y `useSpread()` con el ángulo de apertura.
+- Parallax de cámara con el ratón o la inclinación del móvil (prop `parallax`), que respeta `prefers-reduced-motion`.
+- `<Table>`: mesa de madera clara generada por código, con niebla para fundirla con el fondo.
+- `<PaperEffects>`: oclusión ambiental entre capas, antialiasing, viñeta ligera y tone mapping neutro.
+
+### Cambiado
+
+- `@react-three/postprocessing` y `postprocessing` son ahora dependencias _peer_.
+- `<Spread>` ya no levanta la escena por su cuenta; lo hace `<PopUp>`.
+
+### Corregido
+
+- Se usa `ShapePath.toShapes()` en lugar de `SVGLoader.createShapes()`, obsoleto desde Three r185.
+
 ## [0.2.0] - 2026-11-25
 
 ### Añadido

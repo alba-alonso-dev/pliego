@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.2**: un libro de cartulina con hojas que se pasan con las flechas, el teclado o arrastrando, y escenas hechas con piezas recortadas desde SVG, con grano de papel, bordes irregulares y sombras suaves. El despliegue pop-up llega en la v0.3.
+Versión **0.3**: un libro pop-up de cartulina. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página, viajan con su hoja al pasarla y se separan con un ligero parallax de cámara, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -33,11 +33,11 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.2.0
+npm install github:alba-alonso-dev/pliego#v0.3.0
 ```
 
 ```tsx
-import { Book, BookArrows, Paper, PliegoCanvas, Spread } from 'pliego'
+import { Book, BookArrows, Paper, PliegoCanvas, PopUp, Spread } from 'pliego'
 import casa from './formas/casa.svg?raw'
 
 export function App() {
@@ -46,7 +46,9 @@ export function App() {
       <PliegoCanvas>
         <Book size={[1, 1.4]} coverColor="#b5543c">
           <Spread id="energia">
-            <Paper src={casa} height={0.4} position={[0.3, 0, 0]} color="#d98e6a" />
+            <PopUp at={-0.2} x={0.3}>
+              <Paper src={casa} height={0.4} color="#d98e6a" />
+            </PopUp>
           </Spread>
           <Spread id="comida">{/* … */}</Spread>
         </Book>
@@ -62,13 +64,16 @@ export function App() {
 | `<PliegoCanvas>` | Lienzo 3D con cámara, luz y sombras                                                          |
 | `<Book>`         | El libro: una hoja por cada `<Spread>`. Props `size`, `thickness`, colores y navegación      |
 | `<Spread id>`    | Escena de una doble página; el lomo está en `x = 0`. El `id` es también el `#hash` de la URL |
+| `<PopUp at x>`   | Pliegue al que se pegan las piezas: las levanta al abrir el spread y las lleva con su hoja   |
 | `<Paper src>`    | Pieza de cartulina recortada desde un SVG, con grosor, grano y bordes irregulares            |
 | `<BookArrows>`   | Flechas HTML accesibles, fuera del lienzo                                                    |
 | `useBook()`      | `{ current, count, next, prev, goTo, goToId, … }` para hacer tus propios controles           |
 
 `<Paper>` acepta `width` o `height` (tamaño final), `color`, `depth` (grosor), `anchor` (`bottom` para piezas de pie, `center`) y `roughEdges` (irregularidad del borde; `false` para un borde perfecto). Cada `<path>`, `<rect>` o `<polygon>` relleno del SVG es una pieza; los huecos interiores se respetan.
 
-La luz se ajusta con `<PliegoCanvas lights={{ position, intensity, color, softness, contactShadow }}>`.
+`<PopUp>` se coloca con `at` (profundidad de la línea de pliegue: negativo es el fondo de la página) y `x` (el lomo está en `x = 0`). Las piezas del fondo se levantan antes; `angle` es su ángulo final (90 = de pie) y `delay` cambia cuándo empiezan a subir.
+
+`<PliegoCanvas>` admite `lights` (luz y sombras), `parallax` (recorrido de la cámara; `false` lo quita), `table` (la mesa de madera) y `effects` (oclusión ambiental, viñeta y tono). Todo se puede desactivar.
 
 `<Book>` activa por defecto el teclado, el hash en la URL y el arrastre; se desactivan con `keyboard={false}`, `hash={false}` o `drag={false}`.
 
