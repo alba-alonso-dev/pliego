@@ -3,6 +3,21 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.4.0] - 2026-11-25
+
+### Añadido
+
+- `<HandDrawn>`: trazos a mano desde un SVG de líneas, dibujados con tinta sobre el papel y pegados a su página. Admite un SVG por idioma (`{ es, en }`).
+- `reveal` en `<HandDrawn>`: el trazo se dibuja solo, uno detrás de otro, cuando el spread queda abierto; se borra cuando el spread deja de verse. Con `prefers-reduced-motion` aparece entero.
+- `<PrintedLayer>`: ilustración impresa plana sobre una página (PNG, WebP o SVG), siempre visible al pasar la hoja, con parallax por capa y orden de apilado.
+- `<OnPage>`: pega cualquier contenido a la superficie de una página para que gire con su hoja.
+- `useParallaxPointer()`: puntero del ratón o del giroscopio, compartido por la cámara y las capas.
+- Guía para pasar un dibujo a mano a SVG con Inkscape: [docs/guia-trazos.md](docs/guia-trazos.md).
+
+### Cambiado
+
+- `<PopUp>` usa `<OnPage>` por dentro; su comportamiento no cambia.
+
 ## [0.3.1] - 2026-11-25
 
 ### Cambiado
