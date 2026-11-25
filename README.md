@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.3**: un libro pop-up de cartulina. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página, viajan con su hoja al pasarla y se separan con un ligero parallax de cámara, sobre una mesa de madera con sombras suaves.
+Versión **0.3**: un libro pop-up de cartulina. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página, se pliegan con su hoja al pasarla y se separan con un ligero parallax de cámara, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -33,7 +33,7 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.3.0
+npm install github:alba-alonso-dev/pliego#v0.3.1
 ```
 
 ```tsx

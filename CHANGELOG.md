@@ -3,6 +3,18 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.3.1] - 2026-11-25
+
+### Cambiado
+
+- Las piezas pop-up se levantan y se pliegan a la vez que gira la hoja, desde el primer grado. El retardo por profundidad ya no las deja quietas: solo hace su curva algo más tardía.
+- La hoja gira con arranque y frenada más suaves (curva de seno) y algo más despacio: 1,15 s por hoja.
+- Nueva función `easeInOutSine`.
+
+### Corregido
+
+- El interior de la contratapa lleva una guarda del color del papel, como la tapa: el último spread ya no parece que tenga una hoja de menos.
+
 ## [0.3.0] - 2026-11-25
 
 ### Añadido
