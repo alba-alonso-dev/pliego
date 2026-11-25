@@ -1,6 +1,7 @@
 import type { ThreeElements } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
 import { ExtrudeGeometry } from 'three'
+import { paperMaterials } from '../materials/paper'
 import { hashSeed, roughenOutlines } from '../math/rough-edges'
 import {
   fitOutlines,
@@ -77,11 +78,15 @@ export function Paper({
 
   useEffect(() => () => geometry.dispose(), [geometry])
 
+  // ExtrudeGeometry: grupo 0 = caras delantera y trasera, grupo 1 = cantos.
+  const material = useMemo(() => {
+    const { face, edge } = paperMaterials(color)
+    return [face, edge]
+  }, [color])
+
   return (
     <group {...group}>
-      <mesh geometry={geometry} castShadow receiveShadow>
-        <meshStandardMaterial color={color} roughness={0.9} metalness={0} />
-      </mesh>
+      <mesh geometry={geometry} material={material} castShadow receiveShadow />
     </group>
   )
 }

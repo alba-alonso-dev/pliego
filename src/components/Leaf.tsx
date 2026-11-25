@@ -1,5 +1,6 @@
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
+import { paperMaterials } from '../materials/paper'
 import type { Group } from 'three'
 import { leafAngle, leafProgress, leafThickness, leftStackY, rightStackY } from '../math/book'
 import { lerp } from '../math/easing'
@@ -42,16 +43,15 @@ export function Leaf({ index, front, back, edge }: LeafProps) {
   })
 
   // Orden de materiales de BoxGeometry: +x, -x, +y, -y, +z, -z.
+  const material = useMemo(() => {
+    const side = paperMaterials(edge).face
+    return [side, side, paperMaterials(front).face, paperMaterials(back).face, side, side]
+  }, [front, back, edge])
+
   return (
     <group ref={pivot}>
-      <mesh position={[width / 2, 0, 0]} castShadow receiveShadow>
+      <mesh position={[width / 2, 0, 0]} material={material} castShadow receiveShadow>
         <boxGeometry args={[width, depth, height]} />
-        <meshStandardMaterial attach="material-0" color={edge} roughness={0.95} />
-        <meshStandardMaterial attach="material-1" color={edge} roughness={0.95} />
-        <meshStandardMaterial attach="material-2" color={front} roughness={0.9} />
-        <meshStandardMaterial attach="material-3" color={back} roughness={0.9} />
-        <meshStandardMaterial attach="material-4" color={edge} roughness={0.95} />
-        <meshStandardMaterial attach="material-5" color={edge} roughness={0.95} />
       </mesh>
     </group>
   )
