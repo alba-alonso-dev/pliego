@@ -11,9 +11,13 @@ describe('elevation', () => {
     expect(elevation(180, 70)).toBe(70)
   })
 
-  it('con la hoja a 90° la pieza ya está casi tumbada', () => {
-    expect(elevation(90)).toBeLessThan(20)
-    expect(elevation(90)).toBeGreaterThan(0)
+  it('con la hoja a 90° la pieza va a medio levantar, algo por detrás', () => {
+    expect(elevation(90)).toBeGreaterThan(25)
+    expect(elevation(90)).toBeLessThan(45)
+  })
+
+  it('empieza a moverse en cuanto se abre la hoja, sin esperar tumbada', () => {
+    expect(elevation(20, 90, MAX_DEPTH_DELAY)).toBeGreaterThan(0.5)
   })
 
   it('sube a medida que el libro se abre, sin bajar nunca', () => {
@@ -27,9 +31,10 @@ describe('elevation', () => {
 })
 
 describe('unfoldProgress con retardo', () => {
-  it('la pieza espera tumbada hasta que se alcanza su retardo', () => {
-    expect(unfoldProgress(0.3 * 180, 0.3)).toBe(0)
-    expect(unfoldProgress(0.65 * 180, 0.3)).toBeCloseTo(0.5)
+  it('el retardo hace la curva más tardía, sin dejar la pieza quieta', () => {
+    expect(unfoldProgress(0.3 * 180, 0.3)).toBeGreaterThan(0)
+    expect(unfoldProgress(90, 0.3)).toBeLessThan(unfoldProgress(90, 0))
+    expect(unfoldProgress(0)).toBe(0)
     expect(unfoldProgress(180, 0.3)).toBe(1)
   })
 
