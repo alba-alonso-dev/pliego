@@ -5,7 +5,7 @@ export function App() {
     <main className="app">
       <header className="title">
         <h1>Pliego</h1>
-        <p>Motor de libros pop-up 3D · v0.1</p>
+        <p>Motor de libros pop-up 3D · v0.2</p>
       </header>
       <PliegoCanvas className="canvas" aria-label="Un libro de cartulina sobre una mesa">
         <DemoBook />
