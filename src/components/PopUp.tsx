@@ -1,11 +1,10 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
-import { pageFrame, spreadSurfaceY } from '../math/book'
 import { depthDelay, elevation, pivotRotationX } from '../math/fold'
-import { useBookStore } from '../store'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 import { useBookContext } from './context'
+import { OnPage } from './OnPage'
 import { useSpread } from './Spread'
 
 export interface PopUpProps {
@@ -19,8 +18,8 @@ export interface PopUpProps {
   /** Ángulo final en grados cuando el spread está plano: 90 = de pie. */
   angle?: number
   /**
-   * Retardo (0–1): la pieza no empieza a subir hasta que el spread está
-   * abierto esa fracción. Por defecto depende de la profundidad (`at`).
+   * Retardo (0–1): cuanto mayor, más tarde sube la pieza respecto a la
+   * apertura del spread. Por defecto depende de la profundidad (`at`).
    */
   delay?: number
   /** Página a la que va pegada. Por defecto, la del lado de `x`. */
@@ -38,34 +37,23 @@ export interface PopUpProps {
  * como en un libro pop-up de papel.
  */
 export function PopUp({ at = 0, x = 0, angle = 90, delay, side, children }: PopUpProps) {
-  const { size, count, thickness } = useBookContext()
-  const { index, theta } = useSpread()
-  const frame = useRef<Group>(null)
-  const surface = useRef<Group>(null)
+  const { size } = useBookContext()
+  const { theta } = useSpread()
   const pivot = useRef<Group>(null)
   const wait = delay ?? depthDelay(at, size[1])
   const page = side ?? (x < 0 ? 'left' : 'right')
-  // El grupo del spread ya está a la altura de la superficie abierta.
-  const base = spreadSurfaceY(index, count, thickness)
 
   useFrame(() => {
-    if (!frame.current || !surface.current || !pivot.current) return
-    const position = useBookStore.getState().position
-    const f = pageFrame(position, index, page, count, thickness)
-    frame.current.position.y = f.y - base
-    frame.current.rotation.z = f.rotation
-    // Medio grosor de cartulina para que, tumbada, no atraviese la página.
-    surface.current.position.y = f.surface + DEFAULT_PAPER_DEPTH / 2
+    if (!pivot.current) return
     pivot.current.rotation.x = pivotRotationX(elevation(theta(), angle, wait))
   })
 
   return (
-    <group ref={frame}>
-      <group ref={surface}>
-        <group ref={pivot} position={[x, 0, at]} rotation={[pivotRotationX(0), 0, 0]}>
-          {children}
-        </group>
+    // Medio grosor de cartulina para que, tumbada, no atraviese la página.
+    <OnPage side={page} lift={DEFAULT_PAPER_DEPTH / 2}>
+      <group ref={pivot} position={[x, 0, at]} rotation={[pivotRotationX(0), 0, 0]}>
+        {children}
       </group>
-    </group>
+    </OnPage>
   )
 }
