@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="700" viewBox="0 0 500 700">
+  <defs>
+    <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9cc7d6" stop-opacity="0.95" />
+      <stop offset="0.55" stop-color="#f3d9b1" stop-opacity="0.75" />
+      <stop offset="1" stop-color="#f7f1e3" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect x="12" y="12" width="476" height="676" rx="6" fill="url(#cielo)" />
+</svg>

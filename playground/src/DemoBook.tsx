@@ -1,4 +1,4 @@
-import { Book, HandDrawn, Paper, PopUp, Spread } from 'pliego'
+import { Book, HandDrawn, Paper, PopUp, PrintedLayer, Spread } from 'pliego'
 import arbol from './shapes/arbol.svg?raw'
 import casa from './shapes/casa.svg?raw'
 import colina from './shapes/colina.svg?raw'
@@ -7,6 +7,9 @@ import nube from './shapes/nube.svg?raw'
 import flecha from './trazos/flecha.svg?raw'
 import pajaros from './trazos/pajaros.svg?raw'
 import sol from './trazos/sol.svg?raw'
+import cielo from './impresas/cielo.svg?url'
+import cieloIzq from './impresas/cielo-izq.svg?url'
+import lejos from './impresas/lejos.svg?url'
 
 /**
  * Libro de prueba: cuatro spreads con piezas pop-up de cartulina.
@@ -62,6 +65,10 @@ export function DemoBook() {
       </Spread>
 
       <Spread id="final">
+        <PrintedLayer src={cieloIzq} side="left" />
+        <PrintedLayer src={cielo} side="right" />
+        <PrintedLayer src={lejos} side="left" order={1} parallax={0.02} />
+        <PrintedLayer src={lejos} side="right" order={1} parallax={0.02} />
         <PopUp at={-0.2} x={-0.3}>
           <Paper src={nube} width={0.35} position={[0, 0.4, 0]} color="#fbf7ee" />
         </PopUp>
