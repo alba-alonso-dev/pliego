@@ -16,8 +16,9 @@ import { animateTo } from '../turn'
 import { BookContext, SpreadIndexContext, type BookContextValue } from './context'
 import { Leaf } from './Leaf'
 import type { SpreadProps } from './Spread'
+import { useBookNavigation, type NavigationOptions } from './useBookNavigation'
 
-export interface BookProps {
+export interface BookProps extends NavigationOptions {
   /** Por ahora solo bisagra a la izquierda; "top" llega en v0.7. */
   hinge?: 'left'
   /** Ancho y alto de una página. */
@@ -50,6 +51,9 @@ export function Book({
   pageColor = '#f7f1e3',
   edgeColor = '#e8dcc2',
   children,
+  keyboard = true,
+  hash = true,
+  drag = true,
 }: BookProps) {
   const spreads = spreadsOf(children)
   const ids = spreads.map((spread) => spread.props.id)
@@ -80,6 +84,8 @@ export function Book({
       }),
     [],
   )
+
+  useBookNavigation({ keyboard, hash, drag })
 
   // Cerrado, el libro se desplaza para quedar centrado.
   const body = useRef<Group>(null)

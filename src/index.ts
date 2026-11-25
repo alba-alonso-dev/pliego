@@ -1,5 +1,8 @@
 export { Book } from './components/Book'
 export type { BookProps } from './components/Book'
+export { BookArrows } from './components/BookArrows'
+export type { BookArrowsProps } from './components/BookArrows'
+export type { NavigationOptions } from './components/useBookNavigation'
 export { PliegoCanvas } from './components/PliegoCanvas'
 export type { PliegoCanvasProps } from './components/PliegoCanvas'
 export { Spread, useSpreadTheta } from './components/Spread'
