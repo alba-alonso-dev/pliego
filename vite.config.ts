@@ -12,6 +12,9 @@ const external = [
   'three',
   '@react-three/fiber',
   '@react-three/drei',
+  '@use-gesture/react',
+  'gsap',
+  'zustand',
 ]
 
 export default defineConfig({

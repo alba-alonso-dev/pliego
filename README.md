@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.0**: arranque del proyecto. De momento el playground muestra un cubo de papel girando.
+Versión **0.1**: un libro de cartulina con hojas rígidas que se pasan con las flechas, el teclado o arrastrando. Las escenas pop-up llegan en la v0.3.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -33,16 +33,36 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.0.0
+npm install github:alba-alonso-dev/pliego#v0.1.0
 ```
 
 ```tsx
-import { PliegoCanvas } from 'pliego'
+import { Book, BookArrows, PliegoCanvas, Spread } from 'pliego'
 
 export function App() {
-  return <PliegoCanvas>{/* el libro irá aquí */}</PliegoCanvas>
+  return (
+    <>
+      <PliegoCanvas>
+        <Book size={[1, 1.4]} coverColor="#b5543c">
+          <Spread id="energia">{/* piezas de la escena */}</Spread>
+          <Spread id="comida">{/* … */}</Spread>
+        </Book>
+      </PliegoCanvas>
+      <BookArrows />
+    </>
+  )
 }
 ```
+
+| Pieza            | Qué hace                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `<PliegoCanvas>` | Lienzo 3D con cámara, luz y sombras                                                          |
+| `<Book>`         | El libro: una hoja por cada `<Spread>`. Props `size`, `thickness`, colores y navegación      |
+| `<Spread id>`    | Escena de una doble página; el lomo está en `x = 0`. El `id` es también el `#hash` de la URL |
+| `<BookArrows>`   | Flechas HTML accesibles, fuera del lienzo                                                    |
+| `useBook()`      | `{ current, count, next, prev, goTo, goToId, … }` para hacer tus propios controles           |
+
+`<Book>` activa por defecto el teclado, el hash en la URL y el arrastre; se desactivan con `keyboard={false}`, `hash={false}` o `drag={false}`.
 
 `react`, `react-dom`, `three`, `@react-three/fiber` y `@react-three/drei` son dependencias _peer_: las instala el proyecto que usa Pliego.
 
