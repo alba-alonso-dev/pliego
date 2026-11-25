@@ -88,6 +88,14 @@ export function Book({
 
   useBookNavigation({ keyboard, hash, drag })
 
+  // Contratapa: por dentro lleva pegada una guarda del color del papel,
+  // como la tapa; los cantos y la base son de tapa.
+  // Orden de materiales de BoxGeometry: +x, -x, +y, -y, +z, -z.
+  const backCover = useMemo(() => {
+    const cover = paperMaterials(coverColor).face
+    return [cover, cover, paperMaterials(pageColor).face, cover, cover, cover]
+  }, [coverColor, pageColor])
+
   // Cerrado, el libro se desplaza para quedar centrado.
   const body = useRef<Group>(null)
   useFrame(() => {
@@ -102,7 +110,7 @@ export function Book({
         {/* Contratapa: la base fija bajo la pila de la derecha. */}
         <mesh
           position={[width / 2, thickness.cover / 2, 0]}
-          material={paperMaterials(coverColor).face}
+          material={backCover}
           castShadow
           receiveShadow
         >
