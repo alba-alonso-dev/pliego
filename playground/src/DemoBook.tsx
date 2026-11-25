@@ -1,9 +1,15 @@
-import { Book, Paper, PopUp, Spread } from 'pliego'
+import { Book, HandDrawn, Paper, PopUp, PrintedLayer, Spread } from 'pliego'
 import arbol from './shapes/arbol.svg?raw'
 import casa from './shapes/casa.svg?raw'
 import colina from './shapes/colina.svg?raw'
 import molino from './shapes/molino.svg?raw'
 import nube from './shapes/nube.svg?raw'
+import flecha from './trazos/flecha.svg?raw'
+import pajaros from './trazos/pajaros.svg?raw'
+import sol from './trazos/sol.svg?raw'
+import cielo from './impresas/cielo.svg?url'
+import cieloIzq from './impresas/cielo-izq.svg?url'
+import lejos from './impresas/lejos.svg?url'
 
 /**
  * Libro de prueba: cuatro spreads con piezas pop-up de cartulina.
@@ -23,9 +29,12 @@ export function DemoBook() {
         <PopUp at={0.1} x={0.45}>
           <Paper src={arbol} height={0.45} color="#5b8e7d" />
         </PopUp>
+        <HandDrawn src={pajaros} x={-0.55} at={-0.45} width={0.3} reveal />
+        <HandDrawn src={flecha} x={-0.3} at={0.38} width={0.32} reveal={{ delay: 1 }} />
       </Spread>
 
       <Spread id="colinas">
+        <HandDrawn src={sol} x={-0.78} at={-0.52} width={0.2} reveal />
         <PopUp at={-0.4} x={0.3}>
           <Paper src={molino} height={0.7} color="#fbf7ee" />
         </PopUp>
@@ -56,6 +65,10 @@ export function DemoBook() {
       </Spread>
 
       <Spread id="final">
+        <PrintedLayer src={cieloIzq} side="left" />
+        <PrintedLayer src={cielo} side="right" />
+        <PrintedLayer src={lejos} side="left" order={1} parallax={0.02} />
+        <PrintedLayer src={lejos} side="right" order={1} parallax={0.02} />
         <PopUp at={-0.2} x={-0.3}>
           <Paper src={nube} width={0.35} position={[0, 0.4, 0]} color="#fbf7ee" />
         </PopUp>
