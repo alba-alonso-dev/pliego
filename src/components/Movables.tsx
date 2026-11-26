@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
 import { paperMaterials } from '../materials/paper'
@@ -12,6 +11,7 @@ import { DEFAULT_PAPER_DEPTH, Paper } from './Paper'
 import { useSpread } from './useSpread'
 import { MovableContext, useMovable } from './movable-context'
 import { useGesture, type Gesture } from './useGesture'
+import { useSpreadFrame } from './spread-frame'
 
 type Side = 'left' | 'right'
 type Vec3 = [number, number, number]
@@ -82,7 +82,7 @@ export function PullTab({
   const tab = useRef<Group>(null)
   const edge = size[0] - 0.12
 
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (tab.current) tab.current.position.x = sign * (edge + gesture.progress() * pull)
   })
 
@@ -116,7 +116,7 @@ export interface LinkedProps {
 export function Linked({ from, to, turn = [0, 0], delay = 0, children }: LinkedProps) {
   const progress = useMovable()
   const group = useRef<Group>(null)
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!group.current) return
     const t = linkedProgress(progress(), delay)
     group.current.position.set(
@@ -167,7 +167,7 @@ export function Volvelle({
   const gesture = useGesture({ mode: 'drag', axis: 'x', distance: 300 })
   useRegister(gesture, label, 'range')
   const disc = useRef<Group>(null)
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (disc.current) disc.current.rotation.y = -gesture.progress() * turns * Math.PI * 2
   })
   const size = radius * 2.3
@@ -241,7 +241,7 @@ export function Flap({
   useRegister(gesture, label, 'toggle')
   const leaf = useRef<Group>(null)
   const sign = hinge === 'back' ? 1 : -1
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (leaf.current) leaf.current.rotation.x = (-sign * gesture.progress() * (165 * Math.PI)) / 180
   })
   return (

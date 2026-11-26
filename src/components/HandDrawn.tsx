@@ -1,5 +1,4 @@
 import { Line } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef, type ComponentRef } from 'react'
 import { DEFAULT_REVEAL, revealProgress, visibleSegments, type RevealTiming } from '../math/reveal'
 import { prefersReducedMotion } from '../motion'
@@ -14,6 +13,7 @@ import { useBookStore } from '../store'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useSpread } from './useSpread'
+import { useSpreadFrame } from './spread-frame'
 
 export interface HandDrawnProps {
   /** Texto de un SVG de trazos (importado con `?raw`), o uno por idioma. */
@@ -91,7 +91,7 @@ export function HandDrawn({
   const timing: RevealTiming | null =
     reveal === false ? null : { ...DEFAULT_REVEAL, ...(reveal === true ? {} : reveal) }
 
-  useFrame((_, delta) => {
+  useSpreadFrame((_, delta) => {
     if (!timing) return
     if (theta() < RESET_BELOW) elapsed.current = 0
     else if (isOpen() && !useBookStore.getState().turning) elapsed.current += delta

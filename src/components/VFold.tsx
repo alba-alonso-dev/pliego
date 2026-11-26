@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { ExtrudeGeometry, Matrix4, Shape, Vector2, Vector3, type Mesh } from 'three'
 import { paperMaterials } from '../materials/paper'
@@ -13,6 +12,7 @@ import {
   type MechanismParts,
 } from './fold-context'
 import { MechanismRoot, PanelFrame } from './FoldSupport'
+import { useSpreadFrame } from './spread-frame'
 
 export interface VFoldProps {
   /** Vértice de la V sobre el lomo: de -alto/2 (fondo) a +alto/2 (frente). */
@@ -181,7 +181,7 @@ const basis = new Matrix4()
 /** Un panel de la V: orienta su plano con su línea de pegado y el pliegue central. */
 function VPanel({ geometry, material, glue, pose }: VPanelProps) {
   const mesh = useRef<Mesh>(null)
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!mesh.current) return
     e1.set(...glue()).normalize()
     const crease = new Vector3(...pose().crease)

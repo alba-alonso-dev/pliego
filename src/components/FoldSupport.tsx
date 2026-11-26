@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useContext, useMemo, useRef, type ReactNode } from 'react'
 import { Matrix4, Vector3, type Group } from 'three'
 import { supportFrame, type SupportPose } from '../math/layers'
@@ -13,6 +12,7 @@ import {
   type MechanismParts,
   type PanelPose,
 } from './fold-context'
+import { useSpreadFrame } from './spread-frame'
 
 /**
  * Monta un mecanismo: si ya está dentro de otro, usa su pliegue; si no,
@@ -58,7 +58,7 @@ export interface FoldFrameProps {
 export function FoldFrame({ pose, children }: FoldFrameProps) {
   const group = useRef<Group>(null)
   const support = useMemo<FoldSupport>(() => ({ theta: () => supportFrame(pose()).theta }), [pose])
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!group.current) return
     const current = pose()
     const frame = supportFrame(current)
@@ -80,7 +80,7 @@ export function FoldFrame({ pose, children }: FoldFrameProps) {
  */
 export function PanelFrame({ pose, children }: { pose: () => PanelPose; children?: ReactNode }) {
   const group = useRef<Group>(null)
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!group.current) return
     const { origin, x, y } = pose()
     vx.set(...x).normalize()

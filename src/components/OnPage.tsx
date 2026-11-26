@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
 import { leafProgress, pageFrame, spreadSurfaceY } from '../math/book'
@@ -8,6 +7,7 @@ import { useBookStore } from '../store'
 import { useBookContext } from './context'
 import { SPINE_GAP } from './Leaf'
 import { useSpread } from './useSpread'
+import { useSpreadFrame } from './spread-frame'
 
 export interface OnPageProps {
   /** Página a la que va pegado el contenido. */
@@ -43,7 +43,7 @@ export function OnPage({ side, lift = 0, along, children }: OnPageProps) {
   const curls = along !== undefined && leaf > 0 && leaf < count
   const length = size[0] - SPINE_GAP
 
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!frame.current || !surface.current || !curl.current) return
     const position = useBookStore.getState().position
     const f = pageFrame(position, index, side, count, thickness)

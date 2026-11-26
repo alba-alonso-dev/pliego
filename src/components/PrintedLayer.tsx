@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BufferGeometry,
@@ -18,6 +17,7 @@ import { useBookContext } from './context'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useParallaxPointer } from './useParallaxPointer'
+import { useSpreadFrame } from './spread-frame'
 
 export interface PrintedLayerProps {
   /** URL de la imagen (PNG, WebP o SVG con `width` y `height`). */
@@ -128,7 +128,7 @@ export function PrintedLayer({
   const pointer = useParallaxPointer(parallax !== 0)
   const shift = useRef<[number, number]>([0, 0])
   const [ax, az] = typeof parallax === 'number' ? [parallax, parallax] : parallax
-  useFrame((state, delta) => {
+  useSpreadFrame((state, delta) => {
     if (!texture) return
     const target = layerShift(pointer(state), [ax, az])
     const k = damping(3, Math.min(delta, 0.1))

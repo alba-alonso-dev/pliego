@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
 import { depthDelay, elevation, pivotRotationX } from '../math/fold'
@@ -7,6 +6,7 @@ import { useBookContext } from './context'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useSpread } from './useSpread'
+import { useSpreadFrame } from './spread-frame'
 
 export interface PopUpProps {
   /**
@@ -45,7 +45,7 @@ export function PopUp({ at = 0, x = 0, angle = 90, delay, side, children }: PopU
   const page = side ?? (x < 0 ? 'left' : 'right')
   const turn = useReaderTurn()
 
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!pivot.current) return
     pivot.current.rotation.x = pivotRotationX(elevation(theta(), angle, wait))
   })
