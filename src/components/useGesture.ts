@@ -13,6 +13,8 @@ export interface GestureOptions {
   mode?: 'drag' | 'hold' | 'click'
   /** Eje del arrastre: `x` (a la derecha sube) o `y` (hacia arriba sube). */
   axis?: 'x' | 'y'
+  /** Invierte el sentido del arrastre (por ejemplo, tirar hacia la izquierda). */
+  invert?: boolean
   /** Píxeles de arrastre para recorrer todo el rango. */
   distance?: number
   /** Segundos para recorrer todo el rango al mantener o tras un clic. */
@@ -57,6 +59,7 @@ export interface Gesture {
 export function useGesture({
   mode = 'drag',
   axis = 'y',
+  invert = false,
   distance = 220,
   duration = 1.2,
   release = 'stay',
@@ -123,7 +126,7 @@ export function useGesture({
           event.stopPropagation()
           const moved =
             axis === 'x' ? event.clientX - grab.current.x : grab.current.y - event.clientY
-          progress.current = dragProgress(grab.current.start, moved, distance)
+          progress.current = dragProgress(grab.current.start, invert ? -moved : moved, distance)
           target.current = progress.current
         },
         onPointerUp: () => release_(),
@@ -136,5 +139,5 @@ export function useGesture({
         },
       },
     }
-  }, [mode, axis, distance])
+  }, [mode, axis, invert, distance])
 }

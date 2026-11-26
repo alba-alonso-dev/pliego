@@ -1,4 +1,4 @@
-﻿import { BookArrows, PliegoCanvas } from 'pliego'
+﻿import { BookArrows, MovableControls, PliegoCanvas } from 'pliego'
 import { DemoBook } from './DemoBook'
 
 export function App() {
@@ -12,6 +12,7 @@ export function App() {
         <DemoBook />
       </PliegoCanvas>
       <BookArrows className="arrows" />
+      <MovableControls className="movables" />
       <p className="hint">Usa las flechas, el teclado o arrastra la hoja</p>
     </main>
   )

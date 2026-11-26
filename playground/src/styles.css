@@ -110,3 +110,37 @@ body,
   color: #5a5048;
   pointer-events: none;
 }
+
+.movables {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.movables label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.movables button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #c9bfae;
+  border-radius: 999px;
+  background: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
+.movables button[aria-pressed='true'] {
+  background: #e9c46a;
+}
