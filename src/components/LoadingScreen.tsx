@@ -21,9 +21,11 @@ export function LoadingScreen({
   label = 'Cargando…',
   fade = 500,
 }: LoadingScreenProps) {
-  const { active, progress } = useProgress()
+  const { active, progress, total } = useProgress()
   const [gone, setGone] = useState(false)
-  const done = !active && progress >= 100
+  // Terminado: no hay nada cargándose y, o se ha cargado todo, o no había
+  // nada que cargar (un libro sin imágenes no debe quedarse en esta pantalla).
+  const done = !active && (progress >= 100 || total === 0)
 
   useEffect(() => {
     if (!done) return
