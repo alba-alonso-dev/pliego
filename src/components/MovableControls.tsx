@@ -5,6 +5,8 @@ import { useBookStore } from '../store'
 
 export interface MovableControlsProps {
   className?: string
+  /** Nombre accesible del grupo de controles. */
+  label?: string
 }
 
 /**
@@ -12,7 +14,10 @@ export interface MovableControlsProps {
  * deslizador por cada lengüeta o rueda y un botón por cada solapa. Así se
  * pueden manejar con el teclado o con un lector de pantalla.
  */
-export function MovableControls({ className = 'pliego-movables' }: MovableControlsProps) {
+export function MovableControls({
+  className = 'pliego-movables',
+  label = 'Piezas móviles',
+}: MovableControlsProps) {
   const current = useBookStore((state) => state.current)
   const entries = useMovablesStore((state) => state.entries).filter(
     (entry) => entry.spread === current - 1,
@@ -27,7 +32,7 @@ export function MovableControls({ className = 'pliego-movables' }: MovableContro
 
   if (entries.length === 0) return null
   return (
-    <div className={className} role="group" aria-label="Piezas móviles">
+    <div className={className} role="group" aria-label={label}>
       {entries.map((entry) =>
         entry.kind === 'toggle' ? (
           <button

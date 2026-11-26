@@ -285,3 +285,12 @@ body,
     left: 11rem;
   }
 }
+
+.languages button:focus-visible,
+.sound:focus-visible,
+.share:focus-visible,
+.movables button:focus-visible,
+.movables input:focus-visible {
+  outline: 2px solid #b5543c;
+  outline-offset: 2px;
+}

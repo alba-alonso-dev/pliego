@@ -6,6 +6,8 @@ export interface BookArrowsProps {
   style?: CSSProperties
   /** Textos accesibles de los botones (pásalos traducidos con `useT()`). */
   labels?: { prev: string; next: string }
+  /** Nombre accesible del bloque de navegación. */
+  navLabel?: string
 }
 
 /**
@@ -16,12 +18,13 @@ export function BookArrows({
   className = 'pliego-arrows',
   style,
   labels = { prev: 'Página anterior', next: 'Página siguiente' },
+  navLabel = 'Navegación del libro',
 }: BookArrowsProps) {
   const { current, count, isFirst, isLast, next, prev } = useBook()
   // Con la bisagra arriba se lee hacia abajo: anterior ↑ y siguiente ↓.
   const top = useBookStore((state) => state.hinge) === 'top'
   return (
-    <nav className={className} style={style} aria-label="Navegación del libro">
+    <nav className={className} style={style} aria-label={navLabel}>
       <button type="button" onClick={prev} disabled={isFirst} aria-label={labels.prev}>
         <span aria-hidden="true">{top ? '↑' : '←'}</span>
       </button>

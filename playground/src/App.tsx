@@ -21,6 +21,7 @@ const dictionaries = { es, en }
 const estratos = new URLSearchParams(window.location.search).get('libro') === 'estratos'
 
 export function App() {
+  const t = useT()
   return (
     <main className="app">
       <Languages dictionaries={dictionaries} fallback="es" />
@@ -32,17 +33,17 @@ export function App() {
         className="canvas"
         // Estratos se mira algo más de frente, para ver el corte de capas.
         cameraPosition={estratos ? [0, 1.9, 2.7] : undefined}
-        aria-label="Un libro de cartulina sobre una mesa"
+        aria-label={t('canvas', '_')}
       >
         {estratos ? <EstratosBook /> : <DemoBook />}
       </PliegoCanvas>
-      <BookArrows className="arrows" />
+      <Arrows />
       <PageText className="page-text" />
       <Loading />
       <LanguageSwitcher className="languages" />
       <Sound />
       <Share />
-      <MovableControls className="movables" />
+      <Movables />
       <Hint />
     </main>
   )
@@ -74,4 +75,21 @@ function Share() {
   return (
     <ShareButton className="share" labels={{ share: t('share', '_'), copied: t('copied', '_') }} />
   )
+}
+
+/** Flechas y controles de los movibles con sus nombres accesibles traducidos. */
+function Arrows() {
+  const t = useT()
+  return (
+    <BookArrows
+      className="arrows"
+      labels={{ prev: t('prev', '_'), next: t('next', '_') }}
+      navLabel={t('nav', '_')}
+    />
+  )
+}
+
+function Movables() {
+  const t = useT()
+  return <MovableControls className="movables" label={t('movables', '_')} />
 }
