@@ -23,6 +23,9 @@ export const es: Dictionary = {
   movibles: {
     title: 'Movibles',
     text: 'Tira de la lengüeta, gira la rueda y levanta la solapa. También con los controles de arriba.',
+    tab: 'Tira para que salga el sol',
+    wheel: 'Gira la rueda',
+    flap: 'Levanta la solapa',
   },
   mecanismos: {
     title: 'Mecanismos',

@@ -1,4 +1,4 @@
-import { Flap, Linked, Paper, PullTab, Volvelle } from 'pliego'
+import { Flap, Linked, Paper, PullTab, useT, Volvelle } from 'pliego'
 import arbol from './shapes/arbol.svg?raw'
 import casa from './shapes/casa.svg?raw'
 import nube from './shapes/nube.svg?raw'
@@ -12,9 +12,10 @@ const flat = [-Math.PI / 2, 0, 0] as const
  * con las estaciones vista por una ventana y una solapa que esconde una casa.
  */
 export function MovablesScene() {
+  const t = useT()
   return (
     <>
-      <PullTab side="right" at={0.35} label="Tira para que salga el sol">
+      <PullTab side="right" at={0.35} label={t('tab', 'movibles')}>
         <Linked from={[0.55, 0, 0.45]} to={[0.55, 0, -0.35]}>
           <Paper src={sol} width={0.18} anchor="center" rotation={flat} color="#f2b45a" />
         </Linked>
@@ -23,7 +24,14 @@ export function MovablesScene() {
         </Linked>
       </PullTab>
 
-      <Volvelle side="left" x={-0.5} at={-0.2} radius={0.26} label="Gira la rueda" cover="#efe3c8">
+      <Volvelle
+        side="left"
+        x={-0.5}
+        at={-0.2}
+        radius={0.26}
+        label={t('wheel', 'movibles')}
+        cover="#efe3c8"
+      >
         {[0, 1, 2, 3].map((i) => (
           <group key={i} rotation={[0, (i * Math.PI) / 2, 0]}>
             <Paper
@@ -44,7 +52,7 @@ export function MovablesScene() {
         at={0.4}
         width={0.32}
         height={0.28}
-        label="Levanta la solapa"
+        label={t('flap', 'movibles')}
         color="#d98e6a"
       />
       <group position={[-0.5, 0.0015, 0.4]}>

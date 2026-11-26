@@ -170,3 +170,35 @@ body,
   background: #3b3530;
   color: #fffdf8;
 }
+
+.page-text {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 5.5rem;
+  z-index: 1;
+  max-width: min(22rem, 40vw);
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.7);
+}
+
+.page-text h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
+}
+
+.page-text p {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .page-text {
+    left: 1rem;
+    right: 1rem;
+    bottom: 6.5rem;
+    max-width: none;
+  }
+}

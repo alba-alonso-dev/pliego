@@ -23,6 +23,9 @@ export const en: Dictionary = {
   movibles: {
     title: 'Movables',
     text: 'Pull the tab, turn the wheel and lift the flap. You can also use the controls above.',
+    tab: 'Pull to raise the sun',
+    wheel: 'Turn the wheel',
+    flap: 'Lift the flap',
   },
   mecanismos: {
     title: 'Mechanisms',

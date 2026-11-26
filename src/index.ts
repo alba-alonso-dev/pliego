@@ -88,6 +88,8 @@ export { LanguageSwitcher, Languages, useI18nStore, useT, useTexts } from './i18
 export type { LanguageSwitcherProps, LanguagesProps } from './i18n/Languages'
 export { baseLang, resolveLang, translate } from './i18n/resolve'
 export type { Dictionary, LangSources } from './i18n/resolve'
+export { PageText } from './components/PageText'
+export type { PageTextProps } from './components/PageText'
 export { PopUp } from './components/PopUp'
 export type { PopUpProps } from './components/PopUp'
 export { Spread, useSpread, useSpreadTheta } from './components/Spread'

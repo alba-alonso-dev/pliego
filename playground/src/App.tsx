@@ -3,6 +3,7 @@
   LanguageSwitcher,
   Languages,
   MovableControls,
+  PageText,
   PliegoCanvas,
   useT,
 } from 'pliego'
@@ -24,6 +25,7 @@ export function App() {
         <DemoBook />
       </PliegoCanvas>
       <BookArrows className="arrows" />
+      <PageText className="page-text" />
       <LanguageSwitcher className="languages" />
       <MovableControls className="movables" />
       <Hint />
