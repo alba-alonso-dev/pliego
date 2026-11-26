@@ -6,6 +6,7 @@
   MovableControls,
   PageText,
   PliegoCanvas,
+  ShareButton,
   SoundToggle,
   useT,
 } from 'pliego'
@@ -40,6 +41,7 @@ export function App() {
       <Loading />
       <LanguageSwitcher className="languages" />
       <Sound />
+      <Share />
       <MovableControls className="movables" />
       <Hint />
     </main>
@@ -63,5 +65,13 @@ function Sound() {
   const t = useT()
   return (
     <SoundToggle className="sound" labels={{ on: t('soundOn', '_'), off: t('soundOff', '_') }} />
+  )
+}
+
+/** Compartir el spread abierto, con el texto en el idioma activo. */
+function Share() {
+  const t = useT()
+  return (
+    <ShareButton className="share" labels={{ share: t('share', '_'), copied: t('copied', '_') }} />
   )
 }

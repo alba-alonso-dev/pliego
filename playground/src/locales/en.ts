@@ -9,6 +9,8 @@ export const en: Dictionary = {
     loading: 'Cutting out the paper…',
     soundOn: 'Turn sound on',
     soundOff: 'Turn sound off',
+    share: 'Share',
+    copied: 'Link copied',
   },
   bienvenida: {
     title: 'Welcome',

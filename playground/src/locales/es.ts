@@ -9,6 +9,8 @@ export const es: Dictionary = {
     loading: 'Recortando cartulinas…',
     soundOn: 'Activar sonido',
     soundOff: 'Quitar sonido',
+    share: 'Compartir',
+    copied: 'Enlace copiado',
   },
   bienvenida: {
     title: 'Bienvenida',

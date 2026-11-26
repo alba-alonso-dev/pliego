@@ -251,7 +251,8 @@ body,
   }
 }
 
-.sound {
+.sound,
+.share {
   position: absolute;
   bottom: 1.5rem;
   left: 1.5rem;
@@ -270,5 +271,17 @@ body,
     top: 4.2rem;
     bottom: auto;
     left: 1rem;
+  }
+}
+
+.share {
+  left: 12rem;
+}
+
+@media (max-width: 640px) {
+  .share {
+    top: 4.2rem;
+    bottom: auto;
+    left: 11rem;
   }
 }
