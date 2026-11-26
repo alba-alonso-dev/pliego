@@ -1,6 +1,6 @@
 import { Line } from '@react-three/drei'
 import { useMemo, useRef, type ComponentRef } from 'react'
-import { DEFAULT_REVEAL, revealProgress, visibleSegments, type RevealTiming } from '../math/reveal'
+import { DEFAULT_REVEAL, revealProgress, type RevealTiming } from '../math/reveal'
 import { prefersReducedMotion } from '../motion'
 import {
   fitStrokes,
@@ -13,7 +13,7 @@ import { useBookStore } from '../store'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useSpread } from './useSpread'
-import { useSpreadFrame } from './spread-frame'
+import { useSpreadFrame, useSpreadShown } from './spread-frame'
 
 export interface HandDrawnProps {
   /** Texto de un SVG de trazos (importado con `?raw`), o uno por idioma. */
@@ -48,9 +48,6 @@ export const INK_LIFT = 0.0008
 /** Distancia máxima entre puntos del trazo, en unidades del mundo. */
 const STROKE_STEP = 0.004
 
-/** Por debajo de esta apertura (grados) el spread no se ve y el dibujo se borra. */
-const RESET_BELOW = 3
-
 /**
  * Trazo a mano pegado sobre el papel: un SVG de líneas (anotaciones,
  * flechas, una firma) dibujado con tinta sobre la página. Va con su hoja
@@ -81,28 +78,41 @@ export function HandDrawn({
       }).map((stroke) => resample(stroke, STROKE_STEP)),
     [svg, width, height],
   )
-  const segments = useMemo(() => strokes.map((stroke) => stroke.length - 1), [strokes])
+  // Todos los trazos en una sola línea por segmentos: una llamada de dibujo
+  // por dibujo. Los segmentos van en el orden en que se dibujan.
+  const segments = useMemo(() => {
+    const points: [number, number, number][] = []
+    for (const stroke of strokes) {
+      for (let i = 1; i < stroke.length; i++) {
+        points.push([stroke[i - 1]![0], stroke[i - 1]![1], 0], [stroke[i]![0], stroke[i]![1], 0])
+      }
+    }
+    return points
+  }, [strokes])
+  const total = segments.length / 2
 
   // Revelado: avanza mientras el spread está abierto y quieto; se queda
   // dibujado al pasar la hoja y se borra cuando el spread deja de verse.
-  const { theta, isOpen } = useSpread()
-  const lines = useRef<(ComponentRef<typeof Line> | null)[]>([])
+  const { isOpen } = useSpread()
+  const line = useRef<ComponentRef<typeof Line> | null>(null)
   const elapsed = useRef(0)
+  const shown = useSpreadShown()
+  const seen = useRef(-1)
   const timing: RevealTiming | null =
     reveal === false ? null : { ...DEFAULT_REVEAL, ...(reveal === true ? {} : reveal) }
 
   useSpreadFrame((_, delta) => {
-    if (!timing) return
-    if (theta() < RESET_BELOW) elapsed.current = 0
-    else if (isOpen() && !useBookStore.getState().turning) elapsed.current += delta
+    if (!timing || !line.current) return
+    // Si el spread ha estado oculto y vuelve a verse, se dibuja de nuevo.
+    if (shown() !== seen.current) {
+      seen.current = shown()
+      elapsed.current = 0
+    }
+    if (isOpen() && !useBookStore.getState().turning) elapsed.current += delta
     const progress = prefersReducedMotion() ? 1 : revealProgress(elapsed.current, timing)
-    const shown = visibleSegments(segments, progress)
-    lines.current.forEach((line, i) => {
-      if (!line) return
-      const count = shown[i] ?? 0
-      line.visible = count > 0
-      line.geometry.instanceCount = count
-    })
+    const drawn = Math.round(progress * total)
+    line.current.visible = drawn > 0
+    line.current.geometry.instanceCount = drawn
   })
 
   return (
@@ -110,19 +120,17 @@ export function HandDrawn({
       <group position={[x, 0, at]} rotation={[0, (rotate * Math.PI) / 180 + turn, 0]}>
         {/* El dibujo se tumba sobre el papel con su parte de arriba hacia el fondo. */}
         <group rotation={[-Math.PI / 2, 0, 0]}>
-          {strokes.map((stroke, i) => (
+          {total > 0 && (
             <Line
-              key={i}
-              ref={(line) => {
-                lines.current[i] = line
-              }}
-              points={stroke.map(([px, py]) => [px, py, 0] as [number, number, number])}
+              ref={line}
+              points={segments}
+              segments
               color={color}
               lineWidth={lineWidth}
               worldUnits
               visible={!timing}
             />
-          ))}
+          )}
         </group>
       </group>
     </OnPage>

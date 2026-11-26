@@ -1,7 +1,7 @@
 import { useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
-import { leafProgress, pageFrame, spreadSurfaceY } from '../math/book'
-import { curlAmount, curlAt } from '../math/curl'
+import { pageFrame, spreadSurfaceY } from '../math/book'
+import { curledPoint, pageCurl } from '../math/page-curl'
 import { prefersReducedMotion } from '../motion'
 import { useBookStore } from '../store'
 import { useBookContext } from './context'
@@ -33,7 +33,7 @@ export function OnPage({ side, lift = 0, along, children }: OnPageProps) {
   const { size, count, thickness } = useBookContext()
   const { index } = useSpread()
   const frame = useRef<Group>(null)
-  const curl = useRef<Group>(null)
+  const curlGroup = useRef<Group>(null)
   const surface = useRef<Group>(null)
   // El grupo del spread ya está a la altura de la superficie abierta.
   const base = spreadSurfaceY(index, count, thickness)
@@ -44,7 +44,7 @@ export function OnPage({ side, lift = 0, along, children }: OnPageProps) {
   const length = size[0] - SPINE_GAP
 
   useSpreadFrame(() => {
-    if (!frame.current || !surface.current || !curl.current) return
+    if (!frame.current || !surface.current || !curlGroup.current) return
     const position = useBookStore.getState().position
     const f = pageFrame(position, index, side, count, thickness)
     frame.current.position.y = f.y - base
@@ -52,25 +52,16 @@ export function OnPage({ side, lift = 0, along, children }: OnPageProps) {
     surface.current.position.y = f.surface + lift
 
     if (!curls) return
-    const bend = prefersReducedMotion() ? 0 : curlAmount(leafProgress(position, leaf))
-    // En la página izquierda el marco está girado media vuelta respecto a la hoja.
-    const sign = side === 'left' ? -1 : 1
-    const u = Math.abs(along!)
-    const point = curlAt(bend, length, u - SPINE_GAP, SPINE_GAP)
-    const angle = point.angle
+    const curl = pageCurl(position, index, side, count, prefersReducedMotion())
+    const [cx, cy, angle] = curledPoint(along!, curl, length, SPINE_GAP)
     // Lleva el punto `along` a su sitio en la curva y gira lo que hay ahí.
-    const rx = sign * u
-    curl.current.rotation.z = angle
-    curl.current.position.set(
-      sign * point.x - Math.cos(angle) * rx,
-      sign * point.y - Math.sin(angle) * rx,
-      0,
-    )
+    curlGroup.current.rotation.z = angle
+    curlGroup.current.position.set(cx - Math.cos(angle) * along!, cy - Math.sin(angle) * along!, 0)
   })
 
   return (
     <group ref={frame}>
-      <group ref={curl}>
+      <group ref={curlGroup}>
         <group ref={surface}>{children}</group>
       </group>
     </group>

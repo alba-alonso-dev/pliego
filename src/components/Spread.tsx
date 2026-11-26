@@ -37,12 +37,14 @@ export function Spread({ children }: SpreadProps) {
 
   // Un solo bucle para todas las piezas del spread, y nada mientras no se ve.
   const callbacks = useRef(new Set<{ current: FrameCallback }>())
+  const shown = useRef(0)
   const bus = useMemo<SpreadFrameBus>(
     () => ({
       add: (callback) => {
         callbacks.current.add(callback)
         return () => callbacks.current.delete(callback)
       },
+      shown: () => shown.current,
     }),
     [],
   )
@@ -51,6 +53,7 @@ export function Spread({ children }: SpreadProps) {
     if (!group.current) return
     const theta = spreadTheta(useBookStore.getState().position, index, count)
     const visible = theta > HIDDEN_BELOW
+    if (visible && !group.current.visible) shown.current++
     group.current.visible = visible
     if (!visible) return
     for (const callback of callbacks.current) callback.current(state, delta)

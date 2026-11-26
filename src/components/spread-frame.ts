@@ -6,6 +6,8 @@ export type FrameCallback = (state: RootState, delta: number) => void
 /** Bucle de un spread: reúne las actualizaciones de sus piezas. */
 export interface SpreadFrameBus {
   add: (callback: { current: FrameCallback }) => () => void
+  /** Cuántas veces ha vuelto a verse el spread: cambia cada vez que reaparece. */
+  shown: () => number
 }
 
 export const SpreadFrameContext = createContext<SpreadFrameBus | null>(null)
@@ -24,4 +26,11 @@ export function useSpreadFrame(callback: FrameCallback): void {
     ref.current = callback
   })
   useEffect(() => bus.add(ref), [bus])
+}
+
+/** Contador que cambia cada vez que el spread vuelve a verse (para reiniciar animaciones). */
+export function useSpreadShown(): () => number {
+  const bus = useContext(SpreadFrameContext)
+  if (!bus) throw new Error('useSpreadShown debe usarse dentro de <Spread>')
+  return bus.shown
 }
