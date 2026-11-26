@@ -52,7 +52,7 @@ export function PopUp({ at = 0, x = 0, angle = 90, delay, side, children }: PopU
 
   return (
     // Medio grosor de cartulina para que, tumbada, no atraviese la página.
-    <OnPage side={page} lift={DEFAULT_PAPER_DEPTH / 2}>
+    <OnPage side={page} lift={DEFAULT_PAPER_DEPTH / 2} along={x}>
       <group position={[x, 0, at]} rotation={[0, turn, 0]}>
         <group ref={pivot} rotation={[pivotRotationX(0), 0, 0]}>
           {children}

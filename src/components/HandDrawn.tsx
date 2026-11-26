@@ -106,7 +106,7 @@ export function HandDrawn({
   })
 
   return (
-    <OnPage side={page} lift={INK_LIFT}>
+    <OnPage side={page} lift={INK_LIFT} along={x}>
       <group position={[x, 0, at]} rotation={[0, (rotate * Math.PI) / 180 + turn, 0]}>
         {/* El dibujo se tumba sobre el papel con su parte de arriba hacia el fondo. */}
         <group rotation={[-Math.PI / 2, 0, 0]}>

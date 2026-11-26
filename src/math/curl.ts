@@ -44,3 +44,27 @@ export function curlColumns(
   }
   return out
 }
+
+/**
+ * Punto de la línea central de una hoja curvada a una distancia `s` del
+ * principio de la hoja (medida a lo largo del papel), con su ángulo. Es lo
+ * que hace falta para que una pieza pegada a esa altura siga la curva.
+ */
+export function curlAt(
+  bend: number,
+  length: number,
+  s: number,
+  start = 0,
+  steps = 16,
+): { x: number; y: number; angle: number } {
+  const u = Math.min(Math.max(s, 0), length)
+  let x = start
+  let y = 0
+  const step = u / steps
+  for (let i = 0; i < steps; i++) {
+    const mid = -bend * (((i + 0.5) * step) / length) ** 2
+    x += Math.cos(mid) * step
+    y += Math.sin(mid) * step
+  }
+  return { x, y, angle: -bend * (u / length) ** 2 }
+}
