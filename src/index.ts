@@ -48,6 +48,10 @@ export {
   tentFold,
 } from './math/parallel-fold'
 export type { ParallelFoldPose, ParallelFoldSpec, Vec2 } from './math/parallel-fold'
+export { VFold } from './components/VFold'
+export type { VFoldProps } from './components/VFold'
+export { vFold, vFoldLean, vFoldRises } from './math/v-fold'
+export type { Vec3, VFoldPose } from './math/v-fold'
 export { PopUp } from './components/PopUp'
 export type { PopUpProps } from './components/PopUp'
 export { Spread, useSpread, useSpreadTheta } from './components/Spread'

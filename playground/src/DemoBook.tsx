@@ -1,4 +1,14 @@
-import { Book, HandDrawn, Paper, ParallelFold, PopUp, PrintedLayer, Spread, tentFold } from 'pliego'
+import {
+  Book,
+  HandDrawn,
+  Paper,
+  ParallelFold,
+  PopUp,
+  PrintedLayer,
+  Spread,
+  tentFold,
+  VFold,
+} from 'pliego'
 import arbol from './shapes/arbol.svg?raw'
 import casa from './shapes/casa.svg?raw'
 import colina from './shapes/colina.svg?raw'
@@ -67,6 +77,7 @@ export function DemoBook() {
       <Spread id="mecanismos">
         {/* Mecanismos de papel de verdad: su forma la impone la apertura del libro. */}
         <ParallelFold {...tentFold(0.14, 0.24)} at={-0.3} width={0.5} color="#c0614b" />
+        <VFold at={0.45} glueAngle={30} pieceAngle={75} base={0.28} height={0.3} color="#5b8e7d" />
       </Spread>
 
       <Spread id="final">
