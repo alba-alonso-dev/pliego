@@ -20,6 +20,7 @@ import nube from './shapes/nube.svg?raw'
 import flecha from './trazos/flecha.svg?raw'
 import pajaros from './trazos/pajaros.svg?raw'
 import sol from './trazos/sol.svg?raw'
+import { SunScene } from './SunSpread'
 import cielo from './impresas/cielo.svg?url'
 import cieloIzq from './impresas/cielo-izq.svg?url'
 import lejos from './impresas/lejos.svg?url'
@@ -75,6 +76,11 @@ export function DemoBook() {
         <PopUp at={0.25} x={0.75} angle={75}>
           <Paper src={arbol} height={0.35} color="#5b8e7d" />
         </PopUp>
+      </Spread>
+
+      <Spread id="sol">
+        {/* Arrastra el sol hacia arriba: los árboles crecen y reverdecen. */}
+        <SunScene />
       </Spread>
 
       <Spread id="mecanismos">
