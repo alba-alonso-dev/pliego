@@ -32,6 +32,22 @@ export { PrintedLayer } from './components/PrintedLayer'
 export type { PrintedLayerProps } from './components/PrintedLayer'
 export { layerShift } from './math/printed'
 export { useParallaxPointer } from './components/useParallaxPointer'
+export { ParallelFold } from './components/ParallelFold'
+export type { ParallelFoldProps } from './components/ParallelFold'
+export { FoldFrame, MechanismRoot, useFoldSupport } from './components/FoldSupport'
+export type { FoldFrameProps, FoldSupport } from './components/FoldSupport'
+export { FoldPanel } from './components/FoldPanel'
+export type { FoldPanelProps } from './components/FoldPanel'
+export {
+  bisector,
+  circleIntersection,
+  isFoldable,
+  leftSupport,
+  parallelFold,
+  stepFold,
+  tentFold,
+} from './math/parallel-fold'
+export type { ParallelFoldPose, ParallelFoldSpec, Vec2 } from './math/parallel-fold'
 export { PopUp } from './components/PopUp'
 export type { PopUpProps } from './components/PopUp'
 export { Spread, useSpread, useSpreadTheta } from './components/Spread'
