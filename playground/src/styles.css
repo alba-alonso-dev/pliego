@@ -250,3 +250,38 @@ body,
     display: none;
   }
 }
+
+.sound,
+.share {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 1;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #c9bfae;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .sound {
+    top: 4.2rem;
+    bottom: auto;
+    left: 1rem;
+  }
+}
+
+.share {
+  left: 12rem;
+}
+
+@media (max-width: 640px) {
+  .share {
+    top: 4.2rem;
+    bottom: auto;
+    left: 11rem;
+  }
+}

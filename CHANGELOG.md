@@ -3,6 +3,17 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.8.0] - 2026-11-26
+
+Pulido.
+
+### Añadido
+
+- Las piezas siguen la hoja curvada al pasarla: `<OnPage along>`, que usan `<PopUp>` y `<HandDrawn>`; `<PrintedLayer>` se parte en tiras para curvarse con el papel.
+- Sonido opcional del papel (pasar la hoja, lengüetas, ruedas y solapas), sintetizado con Web Audio. Apagado por defecto; `<SoundToggle>` lo activa.
+- `<ShareButton>`: comparte el spread abierto con el menú del sistema o copia el enlace.
+- Metadatos Open Graph y Twitter e imagen de vista previa en el playground.
+
 ## [0.7.0] - 2026-11-26
 
 Lo que necesita Estratos.

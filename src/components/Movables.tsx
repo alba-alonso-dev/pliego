@@ -5,6 +5,7 @@ import { paperMaterials } from '../materials/paper'
 import { lerp } from '../math/easing'
 import { linkedProgress, sectorOutline } from '../math/movables'
 import { useMovablesStore } from '../movables-store'
+import { playPaper, type PaperSound } from '../sound'
 import { useBookContext } from './context'
 import { OnPage } from './OnPage'
 import { DEFAULT_PAPER_DEPTH, Paper } from './Paper'
@@ -24,6 +25,17 @@ export function useMovable(): () => number {
   const gesture = useContext(MovableContext)
   if (!gesture) throw new Error('useMovable debe usarse dentro de <PullTab>, <Volvelle> o <Flap>')
   return gesture.progress
+}
+
+/** Props del gesto que, además, suenan al empezar a mover la pieza. */
+function withSound(gesture: Gesture, kind: PaperSound): Gesture['bind'] {
+  return {
+    ...gesture.bind,
+    onPointerDown: (event) => {
+      playPaper(kind)
+      gesture.bind.onPointerDown(event)
+    },
+  }
 }
 
 /** Registra el movible para que se pueda manejar también con `<MovableControls>`. */
@@ -85,7 +97,7 @@ export function PullTab({
   return (
     <MovableContext.Provider value={gesture}>
       <OnPage side={side} lift={MOVABLE_LIFT}>
-        <group ref={tab} position={[sign * edge, 0, at]} {...gesture.bind}>
+        <group ref={tab} position={[sign * edge, 0, at]} {...withSound(gesture, 'slide')}>
           <mesh position={[(sign * 0.18) / 2, 0, 0]} material={paperMaterials(color).face}>
             <boxGeometry args={[0.18, DEFAULT_PAPER_DEPTH, 0.07]} />
           </mesh>
@@ -181,7 +193,7 @@ export function Volvelle({
     <MovableContext.Provider value={gesture}>
       <OnPage side={side} lift={MOVABLE_LIFT}>
         <group position={[x, 0, at]}>
-          <group ref={disc} {...gesture.bind}>
+          <group ref={disc} {...withSound(gesture, 'slide')}>
             <mesh material={paperMaterials(color).face} receiveShadow>
               <cylinderGeometry args={[radius, radius, DEFAULT_PAPER_DEPTH, 48]} />
             </mesh>
@@ -245,7 +257,7 @@ export function Flap({
       <OnPage side={side} lift={MOVABLE_LIFT * 2}>
         {/* La solapa queda algo por encima de lo que tapa. */}
         <group position={[x, DEFAULT_PAPER_DEPTH / 2 + 0.003, at - (sign * height) / 2]}>
-          <group ref={leaf} {...gesture.bind}>
+          <group ref={leaf} {...withSound(gesture, 'flap')}>
             <mesh
               position={[0, 0, (sign * height) / 2]}
               material={paperMaterials(color).face}

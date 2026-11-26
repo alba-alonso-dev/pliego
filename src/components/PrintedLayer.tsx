@@ -1,7 +1,9 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
+  BufferGeometry,
   ClampToEdgeWrapping,
+  Float32BufferAttribute,
   DoubleSide,
   MeshStandardMaterial,
   SRGBColorSpace,
@@ -11,7 +13,7 @@ import {
 } from 'three'
 import { paperGrain } from '../materials/paper'
 import { damping } from '../math/parallax'
-import { layerShift } from '../math/printed'
+import { layerShift, printedStrips } from '../math/printed'
 import { useBookContext } from './context'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
@@ -43,6 +45,9 @@ export interface PrintedLayerProps {
   order?: number
   opacity?: number
 }
+
+/** Tiras en que se parte la imagen para seguir la curva de la hoja. */
+const STRIPS = 12
 
 /** Separación entre capas impresas, muy por debajo de la tinta y las piezas. */
 const LAYER_GAP = 0.00012
@@ -133,13 +138,28 @@ export function PrintedLayer({
     texture.offset.set(-shift.current[0] / w, -shift.current[1] / h)
   })
 
+  // En tiras paralelas al lomo, para que la imagen siga la curva de la hoja.
+  const strips = useMemo(
+    () =>
+      printedStrips({ cx, at, width: w, height: h, turned: turn !== 0 }, STRIPS).map((strip) => {
+        const geometry = new BufferGeometry()
+        geometry.setAttribute('position', new Float32BufferAttribute(strip.positions, 3))
+        geometry.setAttribute('uv', new Float32BufferAttribute(strip.uvs, 2))
+        geometry.setIndex([0, 2, 1, 0, 3, 2])
+        geometry.computeVertexNormals()
+        return { along: strip.along, geometry }
+      }),
+    [cx, at, w, h, turn],
+  )
+  useEffect(() => () => strips.forEach((strip) => strip.geometry.dispose()), [strips])
+
   return (
-    <OnPage side={side} lift={LAYER_GAP * (order + 1)}>
-      <group position={[cx, 0, at]} rotation={[0, turn, 0]}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} material={material} receiveShadow>
-          <planeGeometry args={[w, h]} />
-        </mesh>
-      </group>
-    </OnPage>
+    <>
+      {strips.map((strip, i) => (
+        <OnPage key={i} side={side} lift={LAYER_GAP * (order + 1)} along={strip.along}>
+          <mesh geometry={strip.geometry} material={material} receiveShadow />
+        </OnPage>
+      ))}
+    </>
   )
 }

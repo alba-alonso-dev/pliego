@@ -6,6 +6,8 @@
   MovableControls,
   PageText,
   PliegoCanvas,
+  ShareButton,
+  SoundToggle,
   useT,
 } from 'pliego'
 import { DemoBook } from './DemoBook'
@@ -24,7 +26,7 @@ export function App() {
       <Languages dictionaries={dictionaries} fallback="es" />
       <header className="title">
         <h1>Pliego</h1>
-        <p>Motor de libros pop-up 3D · v0.7</p>
+        <p>Motor de libros pop-up 3D · v0.8</p>
       </header>
       <PliegoCanvas
         className="canvas"
@@ -38,6 +40,8 @@ export function App() {
       <PageText className="page-text" />
       <Loading />
       <LanguageSwitcher className="languages" />
+      <Sound />
+      <Share />
       <MovableControls className="movables" />
       <Hint />
     </main>
@@ -54,4 +58,20 @@ function Hint() {
 function Loading() {
   const t = useT()
   return <LoadingScreen className="loading" label={t('loading', '_')} />
+}
+
+/** Botón de sonido con el texto en el idioma activo. */
+function Sound() {
+  const t = useT()
+  return (
+    <SoundToggle className="sound" labels={{ on: t('soundOn', '_'), off: t('soundOff', '_') }} />
+  )
+}
+
+/** Compartir el spread abierto, con el texto en el idioma activo. */
+function Share() {
+  const t = useT()
+  return (
+    <ShareButton className="share" labels={{ share: t('share', '_'), copied: t('copied', '_') }} />
+  )
 }
