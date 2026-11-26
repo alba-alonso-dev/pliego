@@ -5,6 +5,9 @@ import { paperMaterials } from '../materials/paper'
 import type { Vec2 } from '../math/parallel-fold'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 
+/** Largo por defecto de las pestañas de pegado. */
+export const DEFAULT_TAB = 0.025
+
 export interface FoldPanelProps {
   /** Extremos del panel en el plano del pliegue soporte. Se llama en cada fotograma. */
   ends: () => [Vec2, Vec2]

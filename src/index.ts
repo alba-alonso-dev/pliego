@@ -1,4 +1,5 @@
 export { Book } from './components/Book'
+export { SPINE_GAP } from './components/Leaf'
 export type { BookProps } from './components/Book'
 export { BookArrows } from './components/BookArrows'
 export type { BookArrowsProps } from './components/BookArrows'
@@ -9,7 +10,7 @@ export type { RoughOptions } from './math/rough-edges'
 export type { PaperProps } from './components/Paper'
 export { bounds, fitOutlines, outlinesFromSvg, shapeFromOutline } from './paper/outline'
 export type { Anchor, FitOptions, Outline, Point } from './paper/outline'
-export { EDGE_SHADE, paperGrain, paperMaterials } from './materials/paper'
+export { EDGE_CORE, PAPER_CORE, paperGrain, paperMaterials } from './materials/paper'
 export type { PaperMaterials } from './materials/paper'
 export { PaperLights } from './components/PaperLights'
 export type { PaperLightsProps } from './components/PaperLights'
@@ -51,7 +52,7 @@ export type {
 } from './components/FoldSupport'
 export { supportFrame } from './math/layers'
 export type { SupportFrame, SupportPose } from './math/layers'
-export { FoldPanel } from './components/FoldPanel'
+export { DEFAULT_TAB, FoldPanel } from './components/FoldPanel'
 export type { FoldPanelProps } from './components/FoldPanel'
 export {
   bisector,

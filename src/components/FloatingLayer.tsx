@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { floatingLayer } from '../math/floating-layer'
-import { FoldPanel } from './FoldPanel'
+import { DEFAULT_TAB, FoldPanel } from './FoldPanel'
 import { FoldFrame, MechanismRoot, useFoldSupport } from './FoldSupport'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 
@@ -14,6 +14,8 @@ export interface FloatingLayerProps {
   /** Fondo de la plataforma a lo largo del lomo. */
   width?: number
   color?: string
+  /** Largo de las pestañas de pegado de las paredes (0 = sin pestañas). */
+  tabs?: number
   /**
    * Mecanismos montados sobre el suelo (`<ParallelFold>`, `<VFold>`, otra
    * `<FloatingLayer>`…). El suelo se comporta como un libro más: su
@@ -47,6 +49,7 @@ function FloatingLayerPieces({
   at = 0,
   width = 0.4,
   color = '#f4ead5',
+  tabs = DEFAULT_TAB,
   children,
 }: FloatingLayerProps) {
   const { theta } = useFoldSupport()
@@ -62,6 +65,15 @@ function FloatingLayerPieces({
       {panel((p) => [p.rightFoot, p.rightCorner])}
       {panel((p) => [p.top, p.leftCorner])}
       {panel((p) => [p.top, p.rightCorner])}
+      {tabs > 0 &&
+        panel((p) => {
+          const t = theta()
+          return [
+            p.leftFoot,
+            [p.leftFoot[0] + tabs * Math.cos(t), p.leftFoot[1] + tabs * Math.sin(t)],
+          ]
+        })}
+      {tabs > 0 && panel((p) => [p.rightFoot, [p.rightFoot[0] + tabs, p.rightFoot[1]]])}
       {/* Las mitades del suelo son paralelas a las páginas: misma apertura que el libro. */}
       <FoldFrame
         pose={() => {

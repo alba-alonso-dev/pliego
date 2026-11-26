@@ -5,9 +5,11 @@ import { paperMaterials } from '../materials/paper'
 import { vFold, vFoldRises, vFoldValleys, type Vec3 } from '../math/v-fold'
 import { warnOnce } from '../warn'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
+import { DEFAULT_TAB } from './FoldPanel'
 import {
   MechanismPartsContext,
   MechanismRoot,
+  PanelFrame,
   useFoldSupport,
   type MechanismParts,
 } from './FoldSupport'
@@ -30,6 +32,8 @@ export interface VFoldProps {
   /** Hacia dónde van las líneas de pegado desde el vértice. */
   toward?: 'back' | 'front'
   color?: string
+  /** Ancho de las pestañas de pegado, tumbadas junto a cada línea de pegado (0 = sin pestañas). */
+  tabs?: number
   /**
    * Capas montadas sobre la V: `<Valley side>` (en el pliegue entre un
    * panel y su página: V en cascada) u `<OnPanel side>` (pegado a un panel).
@@ -64,6 +68,7 @@ function VFoldPieces({
   height = 0.35,
   toward = 'back',
   color = '#f4ead5',
+  tabs = DEFAULT_TAB,
   children,
 }: VFoldProps) {
   const { theta } = useFoldSupport()
@@ -129,6 +134,23 @@ function VFoldPieces({
       <MechanismPartsContext.Provider value={parts}>{children}</MechanismPartsContext.Provider>
       <VPanel geometry={geometry} material={material} glue={() => pose().right} pose={pose} />
       <VPanel geometry={geometry} material={material} glue={() => pose().left} pose={pose} />
+      {tabs > 0 &&
+        (['right', 'left'] as const).map((side) => (
+          <PanelFrame
+            key={side}
+            pose={() => {
+              const p = pose()
+              const valley = vFoldValleys(p, theta(), base)[side]
+              // La pestaña se tumba sobre la página, hacia fuera de la V.
+              const out = side === 'right' ? valley.right : valley.left
+              return { origin: [0, 0, 0], x: p[side], y: out }
+            }}
+          >
+            <mesh position={[base / 2, tabs / 2, 0]} material={material[0]} receiveShadow>
+              <boxGeometry args={[base, tabs, DEFAULT_PAPER_DEPTH]} />
+            </mesh>
+          </PanelFrame>
+        ))}
     </group>
   )
 }

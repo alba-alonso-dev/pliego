@@ -16,6 +16,9 @@ export interface LeafProps {
   edge: string
 }
 
+/** Holgura junto al lomo: las hojas no llegan justo a la bisagra. */
+export const SPINE_GAP = 0.003
+
 /**
  * Una hoja rígida que gira sobre la bisagra (el eje Z, en x = 0).
  * Lee la posición del store en cada fotograma, sin re-renderizar React.
@@ -42,8 +45,13 @@ export function Leaf({ index, front, back, edge }: LeafProps) {
 
   return (
     <group ref={pivot}>
-      <mesh position={[width / 2, 0, 0]} material={material} castShadow receiveShadow>
-        <boxGeometry args={[width, depth, height]} />
+      <mesh
+        position={[SPINE_GAP + (width - SPINE_GAP) / 2, 0, 0]}
+        material={material}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[width - SPINE_GAP, depth, height]} />
       </mesh>
     </group>
   )
