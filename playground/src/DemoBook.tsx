@@ -1,4 +1,5 @@
 import {
+  Bob,
   Book,
   FloatingLayer,
   HandDrawn,
@@ -8,6 +9,7 @@ import {
   PopUp,
   PrintedLayer,
   Spread,
+  Sway,
   tentFold,
   Valley,
   VFold,
@@ -27,7 +29,8 @@ import cieloIzq from './impresas/cielo-izq.svg?url'
 import lejos from './impresas/lejos.svg?url'
 
 /**
- * Libro de prueba: cuatro spreads con piezas pop-up de cartulina.
+ * Libro de prueba: spreads con piezas pop-up de cartulina, movibles y
+ * mecanismos de papel.
  * `at` es la profundidad de la línea de pliegue (negativo = fondo) y `x`
  * la posición a lo ancho (el lomo está en x = 0).
  */
@@ -36,13 +39,17 @@ export function DemoBook() {
     <Book coverColor="#b5543c">
       <Spread id="bienvenida">
         <PopUp at={-0.3} x={0.6}>
-          <Paper src={nube} width={0.3} position={[0, 0.35, 0]} color="#fbf7ee" />
+          <Bob>
+            <Paper src={nube} width={0.3} position={[0, 0.35, 0]} color="#fbf7ee" />
+          </Bob>
         </PopUp>
         <PopUp at={-0.1} x={-0.5}>
           <Paper src={colina} width={0.9} color="#8ab17d" />
         </PopUp>
         <PopUp at={0.1} x={0.45}>
-          <Paper src={arbol} height={0.45} color="#5b8e7d" />
+          <Sway>
+            <Paper src={arbol} height={0.45} color="#5b8e7d" />
+          </Sway>
         </PopUp>
         <HandDrawn src={pajaros} x={-0.55} at={-0.45} width={0.3} reveal />
         <HandDrawn src={flecha} x={-0.3} at={0.38} width={0.32} reveal={{ delay: 1 }} />
