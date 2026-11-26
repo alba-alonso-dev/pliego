@@ -3,6 +3,23 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.6.0] - 2026-11-26
+
+Idiomas y calidad: listo para empezar los libros.
+
+### Añadido
+
+- `<Languages dictionaries>`: idiomas por diccionario (textos por spread y comunes en `_`). Elige el idioma por la URL (`?lang=`), el guardado o el del navegador, y lo refleja en `<html lang>`. `useT()` y `useTexts()` dan los textos; `<LanguageSwitcher>` cambia de idioma.
+- `<PageText>`: texto accesible del spread abierto, en HTML fuera del lienzo y en el idioma activo.
+- `<LoadingScreen>`: pantalla de carga con progreso que se desvanece al terminar.
+- `<Spin>`, `<Sway>` y `<Bob>`: animaciones de ambiente (girar, balancearse, flotar) que se paran con `prefers-reduced-motion`.
+- Calidad adaptable en `<PliegoCanvas>` (`adaptive`): si el dispositivo no llega a unos 30 fps, baja la resolución y quita el postprocesado.
+
+### Cambiado
+
+- En pantallas estrechas (un móvil en vertical) la cámara se aleja lo justo para que quepa el libro abierto, y la niebla se aleja con ella.
+- `prefersReducedMotion()` guarda la respuesta y se actualiza sola si cambia la preferencia, en lugar de consultarla en cada fotograma.
+
 ## [0.5.0] - 2026-11-26
 
 Gestos: el libro se puede tocar.
