@@ -3,6 +3,20 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.7.0] - 2026-11-26
+
+Lo que necesita Estratos.
+
+### Añadido
+
+- `<Book hinge="top">`: bisagra arriba, como un bloc o un calendario de pared; las hojas se pasan hacia arriba. Se navega arrastrando en vertical y con ↑ ↓, y las piezas se giran para mirar al lector.
+- `<Spread thickness edgeColor>`: grosor y color de canto de la hoja que se pasa para salir de cada spread. Con capas distintas, el corte del libro es un corte geológico.
+- Libro de prueba con la bisagra arriba en el playground (`?libro=estratos`).
+
+### Corregido
+
+- La pantalla de carga se quedaba fija en los libros sin imágenes.
+
 ## [0.6.0] - 2026-11-26
 
 Idiomas y calidad: listo para empezar los libros.

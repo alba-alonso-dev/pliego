@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.6**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
+Versión **0.7**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Con la bisagra a la izquierda (un libro) o arriba (un bloc, como Estratos). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -34,7 +34,7 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.6.0
+npm install github:alba-alonso-dev/pliego#v0.7.0
 ```
 
 ```tsx
@@ -103,6 +103,21 @@ Además de `<PopUp>`, que levanta piezas sueltas con una curva, Pliego tiene **m
 | `<OnPanel side>`  | Pega contenido a un panel para que gire con él (pivote)                          |
 
 La base teórica (geometría y reglas de diseño) viene de Glassner (1998), Low et al. (2013) y el Museo del Papel de Georgia Tech.
+
+### Bisagra arriba y capas
+
+```tsx
+<Book hinge="top" size={[1.4, 0.9]}>
+  <Spread id="hoy" thickness={0.03} edgeColor="#b8a17e">
+    …
+  </Spread>
+  <Spread id="cretacico" thickness={0.06} edgeColor="#c98b5a">
+    …
+  </Spread>
+</Book>
+```
+
+Con `hinge="top"` las hojas se pasan hacia arriba y se navega con ↑ ↓ o arrastrando en vertical. En los spreads, la página «derecha» es la de abajo, `x` es la distancia al lomo hacia abajo y `at` recorre el ancho. `thickness` y `edgeColor` dan a la hoja que se pasa para salir de cada spread su grosor y su franja en el canto; el último spread no tiene hoja propia (su página de abajo es la contratapa).
 
 ### Idiomas y accesibilidad
 
