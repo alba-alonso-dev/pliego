@@ -29,6 +29,12 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 - [Estratos](https://github.com/alba-alonso-dev/estratos): un libro que se lee hacia abajo, capa a capa, por la historia de la Tierra.
 - [Carta desde 2080](https://github.com/alba-alonso-dev/carta-2080): un pop-up solarpunk escrito desde el futuro.
 
+## Documentación
+
+- [Guía de inicio](docs/guia-inicio.md): de cero a un libro de dos páginas.
+- [Mecanismos de papel](docs/guia-mecanismos.md), [trazos e ilustraciones](docs/guia-trazos.md), [gestos y movibles](docs/guia-gestos.md), [idiomas y accesibilidad](docs/guia-idiomas.md).
+- [Referencia de la API](https://alba-alonso-dev.github.io/pliego/api/), generada a partir del código.
+
 ## Uso
 
 Se instala directamente desde GitHub, fijando una versión:
