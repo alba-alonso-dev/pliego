@@ -11,6 +11,14 @@ const HIDDEN_BELOW = 3
 export interface SpreadProps {
   /** Identificador del spread; también es el `#hash` de su URL. */
   id: string
+  /**
+   * Grosor de la hoja que se pasa para salir de este spread (la que hay
+   * bajo su página derecha). Con grosores distintos el bloque de hojas se
+   * ve como capas, como en Estratos.
+   */
+  thickness?: number
+  /** Color del canto de esa misma hoja: una franja en el corte del libro. */
+  edgeColor?: string
   children?: ReactNode
 }
 

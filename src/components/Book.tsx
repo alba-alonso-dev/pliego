@@ -72,9 +72,27 @@ export function Book({
     hinge === 'top' ? [screenSize[1], screenSize[0]] : [screenSize[0], screenSize[1]]
   const [width, height] = size
 
+  // Grosor y color de canto propios de cada hoja: los de su spread (la
+  // hoja k se pasa para salir del spread k - 1).
+  const layerKey = spreads
+    .map((s) => `${s.props.thickness ?? ''}:${s.props.edgeColor ?? ''}`)
+    .join('|')
+  const layers = useMemo(
+    () =>
+      spreads.map((_, k) => {
+        const props = k > 0 ? spreads[k - 1]!.props : undefined
+        return { thickness: props?.thickness, edge: props?.edgeColor }
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [layerKey],
+  )
   const thickness = useMemo<Thicknesses>(
-    () => ({ cover: thicknessProp?.cover ?? 0.03, page: thicknessProp?.page ?? 0.006 }),
-    [thicknessProp?.cover, thicknessProp?.page],
+    () => ({
+      cover: thicknessProp?.cover ?? 0.03,
+      page: thicknessProp?.page ?? 0.006,
+      pages: layers.map((layer) => layer.thickness),
+    }),
+    [thicknessProp?.cover, thicknessProp?.page, layers],
   )
   const context = useMemo<BookContextValue>(
     () => ({ size, thickness, count }),
@@ -139,7 +157,7 @@ export function Book({
               index={i}
               front={i === 0 ? coverColor : pageColor}
               back={pageColor}
-              edge={i === 0 ? coverColor : edgeColor}
+              edge={i === 0 ? coverColor : (layers[i]?.edge ?? edgeColor)}
               curl={i !== 0}
             />
           ))}

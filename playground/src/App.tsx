@@ -26,7 +26,12 @@ export function App() {
         <h1>Pliego</h1>
         <p>Motor de libros pop-up 3D · v0.6</p>
       </header>
-      <PliegoCanvas className="canvas" aria-label="Un libro de cartulina sobre una mesa">
+      <PliegoCanvas
+        className="canvas"
+        // Estratos se mira algo más de frente, para ver el corte de capas.
+        cameraPosition={estratos ? [0, 1.9, 2.7] : undefined}
+        aria-label="Un libro de cartulina sobre una mesa"
+      >
         {estratos ? <EstratosBook /> : <DemoBook />}
       </PliegoCanvas>
       <BookArrows className="arrows" />

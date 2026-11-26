@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   leafAngle,
   leafProgress,
+  leafThickness,
   pageFrame,
   leftStackY,
   rightStackY,
@@ -116,5 +117,21 @@ describe('pageFrame', () => {
     const right = pageFrame(2.5, count - 1, 'right', count, t)
     expect(right.rotation).toBe(0)
     expect(right.y + right.surface).toBeCloseTo(t.cover)
+  })
+})
+
+describe('grosor por hoja', () => {
+  const layered = { cover: 0.03, page: 0.006, pages: [undefined, 0.02, undefined, 0.01] }
+
+  it('cada hoja puede tener su propio grosor', () => {
+    expect(leafThickness(0, layered)).toBe(0.03)
+    expect(leafThickness(1, layered)).toBe(0.02)
+    expect(leafThickness(2, layered)).toBe(0.006)
+    expect(leafThickness(3, layered)).toBe(0.01)
+  })
+
+  it('las pilas suman los grosores reales', () => {
+    // Pila derecha de la hoja 1 con 4 hojas: contratapa + hojas 2 y 3 + media hoja 1.
+    expect(rightStackY(1, 4, layered)).toBeCloseTo(0.03 + 0.006 + 0.01 + 0.01)
   })
 })
