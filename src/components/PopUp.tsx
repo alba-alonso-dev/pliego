@@ -4,6 +4,7 @@ import type { Group } from 'three'
 import { depthDelay, elevation, pivotRotationX } from '../math/fold'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 import { useBookContext } from './context'
+import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useSpread } from './Spread'
 
@@ -42,6 +43,7 @@ export function PopUp({ at = 0, x = 0, angle = 90, delay, side, children }: PopU
   const pivot = useRef<Group>(null)
   const wait = delay ?? depthDelay(at, size[1])
   const page = side ?? (x < 0 ? 'left' : 'right')
+  const turn = useReaderTurn()
 
   useFrame(() => {
     if (!pivot.current) return
@@ -51,8 +53,10 @@ export function PopUp({ at = 0, x = 0, angle = 90, delay, side, children }: PopU
   return (
     // Medio grosor de cartulina para que, tumbada, no atraviese la página.
     <OnPage side={page} lift={DEFAULT_PAPER_DEPTH / 2}>
-      <group ref={pivot} position={[x, 0, at]} rotation={[pivotRotationX(0), 0, 0]}>
-        {children}
+      <group position={[x, 0, at]} rotation={[0, turn, 0]}>
+        <group ref={pivot} rotation={[pivotRotationX(0), 0, 0]}>
+          {children}
+        </group>
       </group>
     </OnPage>
   )

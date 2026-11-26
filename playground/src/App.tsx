@@ -9,10 +9,14 @@
   useT,
 } from 'pliego'
 import { DemoBook } from './DemoBook'
+import { EstratosBook } from './EstratosBook'
 import { en } from './locales/en'
 import { es } from './locales/es'
 
 const dictionaries = { es, en }
+
+/** `?libro=estratos` abre el libro de prueba con la bisagra arriba. */
+const estratos = new URLSearchParams(window.location.search).get('libro') === 'estratos'
 
 export function App() {
   return (
@@ -20,10 +24,15 @@ export function App() {
       <Languages dictionaries={dictionaries} fallback="es" />
       <header className="title">
         <h1>Pliego</h1>
-        <p>Motor de libros pop-up 3D · v0.6</p>
+        <p>Motor de libros pop-up 3D · v0.7</p>
       </header>
-      <PliegoCanvas className="canvas" aria-label="Un libro de cartulina sobre una mesa">
-        <DemoBook />
+      <PliegoCanvas
+        className="canvas"
+        // Estratos se mira algo más de frente, para ver el corte de capas.
+        cameraPosition={estratos ? [0, 1.9, 2.7] : undefined}
+        aria-label="Un libro de cartulina sobre una mesa"
+      >
+        {estratos ? <EstratosBook /> : <DemoBook />}
       </PliegoCanvas>
       <BookArrows className="arrows" />
       <PageText className="page-text" />

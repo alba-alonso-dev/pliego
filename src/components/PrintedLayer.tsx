@@ -13,6 +13,7 @@ import { paperGrain } from '../materials/paper'
 import { damping } from '../math/parallax'
 import { layerShift } from '../math/printed'
 import { useBookContext } from './context'
+import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useParallaxPointer } from './useParallaxPointer'
 
@@ -87,8 +88,12 @@ export function PrintedLayer({
 
   const image = texture?.image as { width?: number; height?: number } | undefined
   const aspect = image?.width && image.height ? image.height / image.width : pageHeight / pageWidth
-  const w = width ?? pageWidth
-  const h = height ?? (width !== undefined ? w * aspect : pageHeight)
+  // Con la bisagra arriba la imagen se gira para mirar al lector y su
+  // ancho va a lo largo del lomo.
+  const turn = useReaderTurn()
+  const [fullW, fullH] = turn ? [pageHeight, pageWidth] : [pageWidth, pageHeight]
+  const w = width ?? fullW
+  const h = height ?? (width !== undefined ? w * aspect : fullH)
   const cx = x ?? (side === 'left' ? -pageWidth / 2 : pageWidth / 2)
 
   const material = useMemo(
@@ -130,14 +135,11 @@ export function PrintedLayer({
 
   return (
     <OnPage side={side} lift={LAYER_GAP * (order + 1)}>
-      <mesh
-        position={[cx, 0, at]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={material}
-        receiveShadow
-      >
-        <planeGeometry args={[w, h]} />
-      </mesh>
+      <group position={[cx, 0, at]} rotation={[0, turn, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={material} receiveShadow>
+          <planeGeometry args={[w, h]} />
+        </mesh>
+      </group>
     </OnPage>
   )
 }

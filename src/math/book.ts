@@ -28,11 +28,17 @@ export function leafAngle(position: number, leaf: number): number {
 export interface Thicknesses {
   cover: number
   page: number
+  /**
+   * Grosor propio de algunas hojas, por índice (como las capas de roca de
+   * Estratos). Si falta, la hoja usa `page`.
+   */
+  pages?: (number | undefined)[]
 }
 
-/** Grosor de una hoja: la tapa es más gruesa que las páginas. */
+/** Grosor de una hoja: la tapa es más gruesa; cada hoja puede tener el suyo. */
 export function leafThickness(leaf: number, t: Thicknesses): number {
-  return leaf === 0 ? t.cover : t.page
+  if (leaf === 0) return t.cover
+  return t.pages?.[leaf] ?? t.page
 }
 
 function sumThickness(from: number, to: number, t: Thicknesses): number {

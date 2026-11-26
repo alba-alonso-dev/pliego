@@ -11,6 +11,7 @@ import {
   type HandDrawnSource,
 } from '../paper/strokes'
 import { useBookStore } from '../store'
+import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useSpread } from './Spread'
 
@@ -68,6 +69,7 @@ export function HandDrawn({
   reveal = false,
 }: HandDrawnProps) {
   const lang = useBookStore((state) => state.lang)
+  const turn = useReaderTurn()
   const svg = pickSource(src, lang)
   const page = side ?? (x < 0 ? 'left' : 'right')
 
@@ -105,7 +107,7 @@ export function HandDrawn({
 
   return (
     <OnPage side={page} lift={INK_LIFT}>
-      <group position={[x, 0, at]} rotation={[0, (rotate * Math.PI) / 180, 0]}>
+      <group position={[x, 0, at]} rotation={[0, (rotate * Math.PI) / 180 + turn, 0]}>
         {/* El dibujo se tumba sobre el papel con su parte de arriba hacia el fondo. */}
         <group rotation={[-Math.PI / 2, 0, 0]}>
           {strokes.map((stroke, i) => (
