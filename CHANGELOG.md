@@ -3,6 +3,26 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.4.5] - 2026-11-26
+
+Mecanismos de ingeniería de papel de verdad: la pieza va pegada a las dos páginas y su forma la impone la apertura del libro, sin animación.
+
+### Añadido
+
+- `<ParallelFold>`: pliegue paralelo (cuadrilátero articulado) con los presets `tentFold()` (tienda, de pie con el libro plano) y `stepFold()` (escalón, completo a 90°). Avisa si no se plegaría.
+- `<VFold>`: pliegue en V con solución cerrada; `glueAngle` y `pieceAngle` deciden si se inclina hacia atrás, queda de pie o se inclina hacia delante. Avisa si no se levantaría.
+- `<FloatingLayer>`: plataforma flotante, un suelo elevado que admite otros mecanismos encima.
+- Capas: `<Valley side>` monta mecanismos en el pliegue entre un panel y su página (V en cascada) y `<OnPanel side>` pega contenido a un panel para que gire con él (pivote).
+- Pestañas de pegado (`tabs`) tumbadas sobre las páginas junto a cada pegado.
+- Avisos por consola si un mecanismo no se plegaría, no se levantaría o asomaría fuera de la página con el libro cerrado.
+- Funciones puras con tests: `parallelFold`, `vFold`, `vFoldValleys`, `floatingLayer`, `supportFrame`.
+- Spread «mecanismos» en el playground.
+
+### Cambiado
+
+- Los cantos del papel son más claros que la cara, como el alma blanca de una cartulina impresa (`EDGE_CORE`, `PAPER_CORE`). Sustituye a `EDGE_SHADE`.
+- Las hojas dejan una pequeña holgura junto al lomo (`SPINE_GAP`).
+
 ## [0.4.0] - 2026-11-25
 
 ### Añadido
