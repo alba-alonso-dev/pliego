@@ -1,8 +1,13 @@
-import { useEffect } from 'react'
-import { isFoldable, parallelFold, type ParallelFoldSpec } from '../math/parallel-fold'
+import { useEffect, useMemo, type ReactNode } from 'react'
+import { isFoldable, leftSupport, parallelFold, type ParallelFoldSpec } from '../math/parallel-fold'
 import { warnOnce } from '../warn'
 import { FoldPanel } from './FoldPanel'
-import { MechanismRoot, useFoldSupport } from './FoldSupport'
+import {
+  MechanismPartsContext,
+  MechanismRoot,
+  useFoldSupport,
+  type MechanismParts,
+} from './FoldSupport'
 
 export interface ParallelFoldProps extends ParallelFoldSpec {
   /** Centro de la pieza a lo largo del lomo: de -alto/2 (fondo) a +alto/2 (frente). */
@@ -10,6 +15,11 @@ export interface ParallelFoldProps extends ParallelFoldSpec {
   /** Ancho de la pieza a lo largo del lomo. */
   width?: number
   color?: string
+  /**
+   * Capas montadas sobre la pieza: `<Valley side>` (en el pliegue entre un
+   * panel y su página) u `<OnPanel side>` (pegado a un panel, gira con él).
+   */
+  children?: ReactNode
 }
 
 /**
@@ -38,10 +48,43 @@ function ParallelFoldPieces({
   at = 0,
   width = 0.4,
   color = '#f4ead5',
+  children,
 }: ParallelFoldProps) {
   const { theta } = useFoldSupport()
   const spec = { a, b, left, right }
   const pose = () => parallelFold(theta(), spec)
+
+  const parts = useMemo<MechanismParts>(() => {
+    const solve = () => parallelFold(theta(), { a, b, left, right })
+    const dir = (from: [number, number], to: [number, number]): [number, number, number] => [
+      to[0] - from[0],
+      to[1] - from[1],
+      0,
+    ]
+    return {
+      valleys: {
+        right: () => {
+          const { B, C } = solve()
+          return { origin: [B[0], B[1], at], right: [1, 0, 0], left: dir(B, C), hinge: [0, 0, 1] }
+        },
+        left: () => {
+          const { A, C } = solve()
+          const [lx, ly] = leftSupport(theta())
+          return { origin: [A[0], A[1], at], right: dir(A, C), left: [lx, ly, 0], hinge: [0, 0, 1] }
+        },
+      },
+      panels: {
+        right: () => {
+          const { B, C } = solve()
+          return { origin: [B[0], B[1], at], x: dir(B, C), y: [0, 0, 1] }
+        },
+        left: () => {
+          const { A, C } = solve()
+          return { origin: [A[0], A[1], at], x: dir(A, C), y: [0, 0, -1] }
+        },
+      },
+    }
+  }, [theta, a, b, left, right, at])
 
   useEffect(() => {
     if (!isFoldable(spec, 1e-3)) {
@@ -52,7 +95,7 @@ function ParallelFoldPieces({
   })
 
   return (
-    <>
+    <MechanismPartsContext.Provider value={parts}>
       <FoldPanel
         ends={() => {
           const { A, C } = pose()
@@ -71,6 +114,7 @@ function ParallelFoldPieces({
         z={at}
         color={color}
       />
-    </>
+      {children}
+    </MechanismPartsContext.Provider>
   )
 }

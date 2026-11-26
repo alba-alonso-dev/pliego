@@ -67,3 +67,61 @@ export function vFoldLean(alpha: number, beta: number): number {
   const gamma = Math.acos(clamp(Math.cos(beta) / Math.cos(alpha), -1, 1))
   return Math.PI / 2 - gamma
 }
+
+const dot3 = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+const cross3 = (a: Vec3, b: Vec3): Vec3 => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0],
+]
+const unit = (v: Vec3): Vec3 => {
+  const length = Math.hypot(...v) || 1
+  return [v[0] / length, v[1] / length, v[2] / length]
+}
+
+/** Dirección dentro del panel, perpendicular a su línea de pegado, hacia el pliegue central. */
+export function panelRise(glue: Vec3, crease: Vec3): Vec3 {
+  const k = dot3(crease, glue)
+  return unit([crease[0] - k * glue[0], crease[1] - k * glue[1], crease[2] - k * glue[2]])
+}
+
+/** Pliegue «valle» en una línea de pegado: entre la página (hacia fuera) y el panel. */
+export interface ValleyPose {
+  origin: Vec3
+  right: Vec3
+  left: Vec3
+  hinge: Vec3
+}
+
+/**
+ * Los dos pliegues valle de una V, donde cada panel se junta con su página.
+ * Ahí se pueden montar otras piezas (V en cascada). `base` es el largo de
+ * las líneas de pegado; el valle se ancla en su punto medio.
+ */
+export function vFoldValleys(pose: VFoldPose, theta: number, base: number) {
+  const pageRight: Vec3 = [1, 0, 0]
+  const pageLeft: Vec3 = [Math.cos(theta), Math.sin(theta), 0]
+  const normalLeft: Vec3 = [-Math.sin(theta), Math.cos(theta), 0]
+  const outward = (glue: Vec3, normal: Vec3, along: Vec3): Vec3 => {
+    const p = unit(cross3(glue, normal))
+    return dot3(p, along) >= 0 ? p : [-p[0], -p[1], -p[2]]
+  }
+  const mid = (glue: Vec3): Vec3 => [
+    (glue[0] * base) / 2,
+    (glue[1] * base) / 2,
+    (glue[2] * base) / 2,
+  ]
+  const right: ValleyPose = {
+    origin: mid(pose.right),
+    right: outward(pose.right, [0, 1, 0], pageRight),
+    left: panelRise(pose.right, pose.crease),
+    hinge: pose.right,
+  }
+  const left: ValleyPose = {
+    origin: mid(pose.left),
+    right: panelRise(pose.left, pose.crease),
+    left: outward(pose.left, normalLeft, pageLeft),
+    hinge: [-pose.left[0], -pose.left[1], -pose.left[2]],
+  }
+  return { right, left }
+}

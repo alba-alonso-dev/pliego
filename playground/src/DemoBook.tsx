@@ -2,12 +2,14 @@ import {
   Book,
   FloatingLayer,
   HandDrawn,
+  OnPanel,
   Paper,
   ParallelFold,
   PopUp,
   PrintedLayer,
   Spread,
   tentFold,
+  Valley,
   VFold,
 } from 'pliego'
 import arbol from './shapes/arbol.svg?raw'
@@ -78,7 +80,21 @@ export function DemoBook() {
       <Spread id="mecanismos">
         {/* Mecanismos de papel de verdad: su forma la impone la apertura del libro. */}
         <ParallelFold {...tentFold(0.14, 0.24)} at={-0.42} width={0.3} color="#c0614b" />
-        <VFold at={0.62} glueAngle={30} pieceAngle={75} base={0.28} height={0.3} color="#5b8e7d" />
+        <VFold at={0.62} glueAngle={30} pieceAngle={75} base={0.28} height={0.3} color="#5b8e7d">
+          {/* Capas: una V pequeña en el valle de la grande y una nube que gira con un panel. */}
+          <Valley side="right">
+            <VFold glueAngle={25} pieceAngle={80} base={0.16} height={0.18} color="#8ab17d" />
+          </Valley>
+          <OnPanel side="left">
+            <Paper
+              src={nube}
+              width={0.16}
+              anchor="center"
+              position={[0.16, 0.12, -0.006]}
+              color="#fbf7ee"
+            />
+          </OnPanel>
+        </VFold>
         <FloatingLayer distance={0.3} height={0.1} at={0.03} width={0.32} color="#e9c46a">
           <ParallelFold {...tentFold(0.08, 0.13)} width={0.22} color="#d98e6a" />
         </FloatingLayer>

@@ -66,10 +66,14 @@ function FloatingLayerPieces({
       <FoldFrame
         pose={() => {
           const [x, y] = pose().top
-          return [x, y + DEFAULT_PAPER_DEPTH, 0]
+          const t = theta()
+          return {
+            origin: [x, y + DEFAULT_PAPER_DEPTH, at],
+            right: [1, 0, 0],
+            left: [Math.cos(t), Math.sin(t), 0],
+            hinge: [0, 0, 1],
+          }
         }}
-        theta={theta}
-        z={at}
       >
         {children}
       </FoldFrame>

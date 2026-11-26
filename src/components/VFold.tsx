@@ -1,11 +1,16 @@
 import { useFrame } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { ExtrudeGeometry, Matrix4, Shape, Vector2, Vector3, type Mesh } from 'three'
 import { paperMaterials } from '../materials/paper'
-import { vFold, vFoldRises, type Vec3 } from '../math/v-fold'
+import { vFold, vFoldRises, vFoldValleys, type Vec3 } from '../math/v-fold'
 import { warnOnce } from '../warn'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
-import { MechanismRoot, useFoldSupport } from './FoldSupport'
+import {
+  MechanismPartsContext,
+  MechanismRoot,
+  useFoldSupport,
+  type MechanismParts,
+} from './FoldSupport'
 
 export interface VFoldProps {
   /** Vértice de la V sobre el lomo: de -alto/2 (fondo) a +alto/2 (frente). */
@@ -25,6 +30,11 @@ export interface VFoldProps {
   /** Hacia dónde van las líneas de pegado desde el vértice. */
   toward?: 'back' | 'front'
   color?: string
+  /**
+   * Capas montadas sobre la V: `<Valley side>` (en el pliegue entre un
+   * panel y su página: V en cascada) u `<OnPanel side>` (pegado a un panel).
+   */
+  children?: ReactNode
 }
 
 const DEG = Math.PI / 180
@@ -54,6 +64,7 @@ function VFoldPieces({
   height = 0.35,
   toward = 'back',
   color = '#f4ead5',
+  children,
 }: VFoldProps) {
   const { theta } = useFoldSupport()
   const alpha = glueAngle * DEG
@@ -95,8 +106,27 @@ function VFoldPieces({
 
   const pose = () => vFold(theta(), alpha, beta, sign)
 
+  const parts = useMemo<MechanismParts>(() => {
+    const solve = () => vFold(theta(), alpha, beta, sign)
+    const valleys = () => vFoldValleys(solve(), theta(), base)
+    return {
+      valleys: { right: () => valleys().right, left: () => valleys().left },
+      panels: {
+        right: () => {
+          const p = solve()
+          return { origin: [0, 0, 0], x: p.right, y: p.crease }
+        },
+        left: () => {
+          const p = solve()
+          return { origin: [0, 0, 0], x: p.left, y: p.crease }
+        },
+      },
+    }
+  }, [theta, alpha, beta, sign, base])
+
   return (
     <group position={[0, 0, at]}>
+      <MechanismPartsContext.Provider value={parts}>{children}</MechanismPartsContext.Provider>
       <VPanel geometry={geometry} material={material} glue={() => pose().right} pose={pose} />
       <VPanel geometry={geometry} material={material} glue={() => pose().left} pose={pose} />
     </group>

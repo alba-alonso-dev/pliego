@@ -34,8 +34,23 @@ export { layerShift } from './math/printed'
 export { useParallaxPointer } from './components/useParallaxPointer'
 export { ParallelFold } from './components/ParallelFold'
 export type { ParallelFoldProps } from './components/ParallelFold'
-export { FoldFrame, MechanismRoot, useFoldSupport } from './components/FoldSupport'
-export type { FoldFrameProps, FoldSupport } from './components/FoldSupport'
+export {
+  FoldFrame,
+  MechanismPartsContext,
+  MechanismRoot,
+  OnPanel,
+  PanelFrame,
+  useFoldSupport,
+  Valley,
+} from './components/FoldSupport'
+export type {
+  FoldFrameProps,
+  FoldSupport,
+  MechanismParts,
+  PanelPose,
+} from './components/FoldSupport'
+export { supportFrame } from './math/layers'
+export type { SupportFrame, SupportPose } from './math/layers'
 export { FoldPanel } from './components/FoldPanel'
 export type { FoldPanelProps } from './components/FoldPanel'
 export {
@@ -54,8 +69,8 @@ export { floatingLayer } from './math/floating-layer'
 export type { FloatingLayerPose } from './math/floating-layer'
 export { VFold } from './components/VFold'
 export type { VFoldProps } from './components/VFold'
-export { vFold, vFoldLean, vFoldRises } from './math/v-fold'
-export type { Vec3, VFoldPose } from './math/v-fold'
+export { panelRise, vFold, vFoldLean, vFoldRises, vFoldValleys } from './math/v-fold'
+export type { ValleyPose, Vec3, VFoldPose } from './math/v-fold'
 export { PopUp } from './components/PopUp'
 export type { PopUpProps } from './components/PopUp'
 export { Spread, useSpread, useSpreadTheta } from './components/Spread'
