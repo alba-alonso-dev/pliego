@@ -6,6 +6,7 @@ import {
   MechanismPartsContext,
   MechanismRoot,
   useFoldSupport,
+  warnIfOverflows,
   type MechanismParts,
 } from './FoldSupport'
 
@@ -53,7 +54,8 @@ function ParallelFoldPieces({
   tabs = DEFAULT_TAB,
   children,
 }: ParallelFoldProps) {
-  const { theta } = useFoldSupport()
+  const support = useFoldSupport()
+  const { theta } = support
   const spec = { a, b, left, right }
   const pose = () => parallelFold(theta(), spec)
 
@@ -95,6 +97,14 @@ function ParallelFoldPieces({
         `<ParallelFold> no se plegaría: a + left (${a + left}) debe ser igual a b + right (${b + right}).`,
       )
     }
+    warnIfOverflows('ParallelFold', support, () => {
+      const { A, B, C } = parallelFold(0, spec)
+      const xs = [A[0], B[0], C[0], A[0] + tabs, B[0] + tabs]
+      return xs.flatMap((x) => [
+        [x, 0, at - width / 2],
+        [x, 0, at + width / 2],
+      ])
+    })
   })
 
   return (

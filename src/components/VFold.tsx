@@ -11,6 +11,7 @@ import {
   MechanismRoot,
   PanelFrame,
   useFoldSupport,
+  warnIfOverflows,
   type MechanismParts,
 } from './FoldSupport'
 
@@ -71,7 +72,8 @@ function VFoldPieces({
   tabs = DEFAULT_TAB,
   children,
 }: VFoldProps) {
-  const { theta } = useFoldSupport()
+  const support = useFoldSupport()
+  const { theta } = support
   const alpha = glueAngle * DEG
   const beta = pieceAngle * DEG
   const sign = toward === 'back' ? -1 : 1
@@ -82,7 +84,17 @@ function VFoldPieces({
         `<VFold> no se levantaría: pieceAngle (${pieceAngle}°) debe ser al menos glueAngle (${glueAngle}°).`,
       )
     }
-  }, [alpha, beta, glueAngle, pieceAngle])
+    warnIfOverflows('VFold', support, () => {
+      const closed = vFold(0, alpha, beta, sign)
+      const points: Vec3[] = []
+      for (const glue of [closed.right, closed.left]) {
+        const g: Vec3 = [glue[0] * base, glue[1] * base, glue[2] * base]
+        const d: Vec3 = [closed.crease[0] * height, 0, closed.crease[2] * height]
+        points.push(g, [g[0] + d[0], 0, g[2] + d[2]], d)
+      }
+      return points.map(([x, y, z]) => [x, y, z + at] as Vec3)
+    })
+  }, [alpha, beta, glueAngle, pieceAngle, support, sign, base, height, at])
 
   // El panel es rígido: un paralelogramo entre su línea de pegado (eje X
   // local) y el pliegue central, que forma el ángulo β con ella.

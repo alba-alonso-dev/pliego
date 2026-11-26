@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 import { floatingLayer } from '../math/floating-layer'
 import { DEFAULT_TAB, FoldPanel } from './FoldPanel'
-import { FoldFrame, MechanismRoot, useFoldSupport } from './FoldSupport'
+import { useEffect } from 'react'
+import { FoldFrame, MechanismRoot, useFoldSupport, warnIfOverflows } from './FoldSupport'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 
 export interface FloatingLayerProps {
@@ -52,8 +53,20 @@ function FloatingLayerPieces({
   tabs = DEFAULT_TAB,
   children,
 }: FloatingLayerProps) {
-  const { theta } = useFoldSupport()
+  const support = useFoldSupport()
+  const { theta } = support
   const pose = () => floatingLayer(theta(), distance, height)
+
+  useEffect(() => {
+    warnIfOverflows('FloatingLayer', support, () => {
+      const closed = floatingLayer(0, distance, height)
+      const xs = [closed.leftCorner[0], closed.rightCorner[0], distance + tabs]
+      return xs.flatMap((x) => [
+        [x, 0, at - width / 2],
+        [x, 0, at + width / 2],
+      ])
+    })
+  })
   const panel = (pick: (p: ReturnType<typeof pose>) => [[number, number], [number, number]]) => (
     <FoldPanel ends={() => pick(pose())} width={width} z={at} color={color} />
   )
