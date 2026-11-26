@@ -13,7 +13,7 @@ import {
 import { useBookStore } from '../store'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
-import { useSpread } from './Spread'
+import { useSpread } from './useSpread'
 
 export interface HandDrawnProps {
   /** Texto de un SVG de trazos (importado con `?raw`), o uno por idioma. */

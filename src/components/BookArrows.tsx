@@ -4,7 +4,7 @@ import { useBook, useBookStore } from '../store'
 export interface BookArrowsProps {
   className?: string
   style?: CSSProperties
-  /** Textos accesibles de los botones (hasta que llegue i18n en v0.6). */
+  /** Textos accesibles de los botones (pásalos traducidos con `useT()`). */
   labels?: { prev: string; next: string }
 }
 

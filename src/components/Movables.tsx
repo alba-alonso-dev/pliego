@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber'
-import { createContext, useContext, useEffect, useId, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import type { Group } from 'three'
 import { paperMaterials } from '../materials/paper'
 import { lerp } from '../math/easing'
@@ -9,7 +9,8 @@ import { playPaper, type PaperSound } from '../sound'
 import { useBookContext } from './context'
 import { OnPage } from './OnPage'
 import { DEFAULT_PAPER_DEPTH, Paper } from './Paper'
-import { useSpread } from './Spread'
+import { useSpread } from './useSpread'
+import { MovableContext, useMovable } from './movable-context'
 import { useGesture, type Gesture } from './useGesture'
 
 type Side = 'left' | 'right'
@@ -17,15 +18,6 @@ type Vec3 = [number, number, number]
 
 /** Altura de los movibles sobre el papel: por encima de lo impreso. */
 const MOVABLE_LIFT = 0.002
-
-const MovableContext = createContext<Gesture | null>(null)
-
-/** Progreso del movible que contiene al componente (0–1). Léelo en `useFrame`. */
-export function useMovable(): () => number {
-  const gesture = useContext(MovableContext)
-  if (!gesture) throw new Error('useMovable debe usarse dentro de <PullTab>, <Volvelle> o <Flap>')
-  return gesture.progress
-}
 
 /** Props del gesto que, además, suenan al empezar a mover la pieza. */
 function withSound(gesture: Gesture, kind: PaperSound): Gesture['bind'] {

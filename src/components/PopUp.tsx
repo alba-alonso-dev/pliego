@@ -6,7 +6,7 @@ import { DEFAULT_PAPER_DEPTH } from './Paper'
 import { useBookContext } from './context'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
-import { useSpread } from './Spread'
+import { useSpread } from './useSpread'
 
 export interface PopUpProps {
   /**

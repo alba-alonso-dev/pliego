@@ -1,46 +1,18 @@
 import { useFrame } from '@react-three/fiber'
-import { createContext, useContext, useMemo, useRef, type ReactNode } from 'react'
+import { useContext, useMemo, useRef, type ReactNode } from 'react'
 import { Matrix4, Vector3, type Group } from 'three'
-import { closedOverflow } from '../math/closed-fit'
 import { supportFrame, type SupportPose } from '../math/layers'
-import { warnOnce } from '../warn'
-import type { Vec3 } from '../math/v-fold'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 import { OnPage } from './OnPage'
 import { useBookContext } from './context'
-import { useSpread } from './Spread'
-
-/**
- * Pliegue soporte de un mecanismo: dos planos unidos por una bisagra que
- * va por el eje Z del grupo actual. El soporte derecho va por +X y el
- * izquierdo forma un ángulo `theta()` (radianes) con él, hacia +Y.
- */
-export interface FoldSupport {
-  theta: () => number
-  /**
-   * Tamaño de la página `[ancho, alto]` si el pliegue es el lomo del
-   * spread; sirve para avisar de piezas que asomarían con el libro cerrado.
-   */
-  page?: [number, number]
-}
-
-const FoldContext = createContext<FoldSupport | null>(null)
-
-/** Avisa si una pieza asomaría fuera de la página con el libro cerrado. */
-export function warnIfOverflows(name: string, support: FoldSupport, points: () => Vec3[]): void {
-  if (!support.page) return
-  const overflow = closedOverflow(points(), support.page)
-  if (overflow > 1e-3) {
-    warnOnce(`<${name}> asomaría ${overflow.toFixed(3)} fuera de la página con el libro cerrado.`)
-  }
-}
-
-/** El pliegue soporte en el que está montado el componente. */
-export function useFoldSupport(): FoldSupport {
-  const support = useContext(FoldContext)
-  if (!support) throw new Error('Este mecanismo debe ir dentro de un <Spread> o de otro mecanismo')
-  return support
-}
+import { useSpread } from './useSpread'
+import {
+  FoldContext,
+  MechanismPartsContext,
+  type FoldSupport,
+  type MechanismParts,
+  type PanelPose,
+} from './fold-context'
 
 /**
  * Monta un mecanismo: si ya está dentro de otro, usa su pliegue; si no,
@@ -101,13 +73,6 @@ export function FoldFrame({ pose, children }: FoldFrameProps) {
   )
 }
 
-/** Marco de un panel: origen y dos ejes dentro de su plano. */
-export interface PanelPose {
-  origin: Vec3
-  x: Vec3
-  y: Vec3
-}
-
 /**
  * Pega a sus hijos a un panel de un mecanismo, rígidos con él: giran con
  * el panel al abrir el libro (el «pivote» de la ingeniería de papel).
@@ -128,14 +93,6 @@ export function PanelFrame({ pose, children }: { pose: () => PanelPose; children
   })
   return <group ref={group}>{children}</group>
 }
-
-/** Pliegues y paneles que un mecanismo ofrece para montar capas. */
-export interface MechanismParts {
-  valleys: Partial<Record<'left' | 'right', () => SupportPose>>
-  panels: Partial<Record<'left' | 'right', () => PanelPose>>
-}
-
-export const MechanismPartsContext = createContext<MechanismParts | null>(null)
 
 function useParts(component: string): MechanismParts {
   const parts = useContext(MechanismPartsContext)

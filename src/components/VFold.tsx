@@ -8,12 +8,11 @@ import { DEFAULT_PAPER_DEPTH } from './Paper'
 import { DEFAULT_TAB } from './FoldPanel'
 import {
   MechanismPartsContext,
-  MechanismRoot,
-  PanelFrame,
   useFoldSupport,
   warnIfOverflows,
   type MechanismParts,
-} from './FoldSupport'
+} from './fold-context'
+import { MechanismRoot, PanelFrame } from './FoldSupport'
 
 export interface VFoldProps {
   /** Vértice de la V sobre el lomo: de -alto/2 (fondo) a +alto/2 (frente). */

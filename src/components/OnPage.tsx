@@ -7,7 +7,7 @@ import { prefersReducedMotion } from '../motion'
 import { useBookStore } from '../store'
 import { useBookContext } from './context'
 import { SPINE_GAP } from './Leaf'
-import { useSpread } from './Spread'
+import { useSpread } from './useSpread'
 
 export interface OnPageProps {
   /** Página a la que va pegado el contenido. */
