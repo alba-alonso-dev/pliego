@@ -1,5 +1,6 @@
 import {
   Book,
+  FloatingLayer,
   HandDrawn,
   Paper,
   ParallelFold,
@@ -76,8 +77,11 @@ export function DemoBook() {
 
       <Spread id="mecanismos">
         {/* Mecanismos de papel de verdad: su forma la impone la apertura del libro. */}
-        <ParallelFold {...tentFold(0.14, 0.24)} at={-0.3} width={0.5} color="#c0614b" />
-        <VFold at={0.45} glueAngle={30} pieceAngle={75} base={0.28} height={0.3} color="#5b8e7d" />
+        <ParallelFold {...tentFold(0.14, 0.24)} at={-0.42} width={0.3} color="#c0614b" />
+        <VFold at={0.62} glueAngle={30} pieceAngle={75} base={0.28} height={0.3} color="#5b8e7d" />
+        <FloatingLayer distance={0.3} height={0.1} at={0.03} width={0.32} color="#e9c46a">
+          <ParallelFold {...tentFold(0.08, 0.13)} width={0.22} color="#d98e6a" />
+        </FloatingLayer>
       </Spread>
 
       <Spread id="final">

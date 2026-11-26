@@ -48,6 +48,10 @@ export {
   tentFold,
 } from './math/parallel-fold'
 export type { ParallelFoldPose, ParallelFoldSpec, Vec2 } from './math/parallel-fold'
+export { FloatingLayer } from './components/FloatingLayer'
+export type { FloatingLayerProps } from './components/FloatingLayer'
+export { floatingLayer } from './math/floating-layer'
+export type { FloatingLayerPose } from './math/floating-layer'
 export { VFold } from './components/VFold'
 export type { VFoldProps } from './components/VFold'
 export { vFold, vFoldLean, vFoldRises } from './math/v-fold'
