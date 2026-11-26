@@ -6,6 +6,7 @@ export const en: Dictionary = {
     title: 'Pliego',
     text: 'A paper pop-up book. Open it with the arrow or by dragging the cover.',
     hint: 'Use the arrows, the keyboard or drag the page',
+    loading: 'Cutting out the paper…',
   },
   bienvenida: {
     title: 'Welcome',

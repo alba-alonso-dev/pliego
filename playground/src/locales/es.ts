@@ -6,6 +6,7 @@ export const es: Dictionary = {
     title: 'Pliego',
     text: 'Un libro pop-up de cartulina. Ábrelo con la flecha o arrastrando la tapa.',
     hint: 'Usa las flechas, el teclado o arrastra la hoja',
+    loading: 'Recortando cartulinas…',
   },
   bienvenida: {
     title: 'Bienvenida',

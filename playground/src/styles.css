@@ -202,3 +202,33 @@ body,
     max-width: none;
   }
 }
+
+.loading {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  gap: 0.8rem;
+  background: #f3ede2;
+  text-align: center;
+}
+
+.loading p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.loading-bar {
+  width: min(16rem, 60vw);
+  height: 0.35rem;
+  border-radius: 999px;
+  background: #e2d8c6;
+  overflow: hidden;
+}
+
+.loading-bar > div {
+  height: 100%;
+  background: #c0614b;
+  transition: width 200ms ease;
+}

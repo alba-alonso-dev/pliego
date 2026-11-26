@@ -2,6 +2,7 @@
   BookArrows,
   LanguageSwitcher,
   Languages,
+  LoadingScreen,
   MovableControls,
   PageText,
   PliegoCanvas,
@@ -26,6 +27,7 @@ export function App() {
       </PliegoCanvas>
       <BookArrows className="arrows" />
       <PageText className="page-text" />
+      <Loading />
       <LanguageSwitcher className="languages" />
       <MovableControls className="movables" />
       <Hint />
@@ -37,4 +39,10 @@ export function App() {
 function Hint() {
   const t = useT()
   return <p className="hint">{t('hint', '_')}</p>
+}
+
+/** Pantalla de carga con el texto en el idioma activo. */
+function Loading() {
+  const t = useT()
+  return <LoadingScreen className="loading" label={t('loading', '_')} />
 }
