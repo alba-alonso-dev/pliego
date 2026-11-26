@@ -1,6 +1,7 @@
 import { useThree } from '@react-three/fiber'
 import { useDrag } from '@use-gesture/react'
 import { useEffect } from 'react'
+import { isGestureLocked } from '../gesture-lock'
 import { clamp } from '../math/easing'
 import { idForPage, pageForId, useBookStore } from '../store'
 import { animateTo, stopTurn } from '../turn'
@@ -116,8 +117,13 @@ export function useBookNavigation({
   }, [drag, element])
 
   useDrag(
-    ({ first, last, movement: [mx], velocity: [vx], tap, memo }) => {
+    ({ first, last, movement: [mx], velocity: [vx], tap, memo, cancel }) => {
       if (tap) return memo
+      // Si el gesto empezó sobre una pieza interactiva, la hoja no se mueve.
+      if (isGestureLocked()) {
+        cancel()
+        return memo
+      }
       const { current, position, ids, setPosition, goTo } = useBookStore.getState()
       // El arrastre parte de donde esté la hoja, aunque estuviera girando.
       if (first) stopTurn()

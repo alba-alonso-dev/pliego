@@ -3,6 +3,55 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.6.0] - 2026-11-26
+
+Idiomas y calidad: listo para empezar los libros.
+
+### Añadido
+
+- `<Languages dictionaries>`: idiomas por diccionario (textos por spread y comunes en `_`). Elige el idioma por la URL (`?lang=`), el guardado o el del navegador, y lo refleja en `<html lang>`. `useT()` y `useTexts()` dan los textos; `<LanguageSwitcher>` cambia de idioma.
+- `<PageText>`: texto accesible del spread abierto, en HTML fuera del lienzo y en el idioma activo.
+- `<LoadingScreen>`: pantalla de carga con progreso que se desvanece al terminar.
+- `<Spin>`, `<Sway>` y `<Bob>`: animaciones de ambiente (girar, balancearse, flotar) que se paran con `prefers-reduced-motion`.
+- Calidad adaptable en `<PliegoCanvas>` (`adaptive`): si el dispositivo no llega a unos 30 fps, baja la resolución y quita el postprocesado.
+
+### Cambiado
+
+- En pantallas estrechas (un móvil en vertical) la cámara se aleja lo justo para que quepa el libro abierto, y la niebla se aleja con ella.
+- `prefersReducedMotion()` guarda la respuesta y se actualiza sola si cambia la preferencia, en lugar de consultarla en cada fotograma.
+
+## [0.5.0] - 2026-11-26
+
+Gestos: el libro se puede tocar.
+
+### Añadido
+
+- `useGesture()`: convierte arrastrar, mantener pulsado o hacer clic sobre un objeto 3D en un progreso de 0 a 1. Mientras dura el gesto, el arrastre de página queda en pausa.
+- Movibles: `<PullTab>` (lengüeta que mueve piezas `<Linked>`, cada una con su retardo), `<Volvelle>` (rueda con tapa y ventana) y `<Flap>` (solapa que se levanta con un clic). `useMovable()` da su progreso.
+- `<MovableControls>`: controles HTML accesibles (deslizadores y botones) para los movibles del spread abierto.
+- Las hojas se curvan al pasarlas: el borde libre se queda atrás, como el papel. Las tapas no se curvan.
+- Ejemplos en el playground: «arrastra el sol» y un spread de movibles.
+
+## [0.4.5] - 2026-11-26
+
+Mecanismos de ingeniería de papel de verdad: la pieza va pegada a las dos páginas y su forma la impone la apertura del libro, sin animación.
+
+### Añadido
+
+- `<ParallelFold>`: pliegue paralelo (cuadrilátero articulado) con los presets `tentFold()` (tienda, de pie con el libro plano) y `stepFold()` (escalón, completo a 90°). Avisa si no se plegaría.
+- `<VFold>`: pliegue en V con solución cerrada; `glueAngle` y `pieceAngle` deciden si se inclina hacia atrás, queda de pie o se inclina hacia delante. Avisa si no se levantaría.
+- `<FloatingLayer>`: plataforma flotante, un suelo elevado que admite otros mecanismos encima.
+- Capas: `<Valley side>` monta mecanismos en el pliegue entre un panel y su página (V en cascada) y `<OnPanel side>` pega contenido a un panel para que gire con él (pivote).
+- Pestañas de pegado (`tabs`) tumbadas sobre las páginas junto a cada pegado.
+- Avisos por consola si un mecanismo no se plegaría, no se levantaría o asomaría fuera de la página con el libro cerrado.
+- Funciones puras con tests: `parallelFold`, `vFold`, `vFoldValleys`, `floatingLayer`, `supportFrame`.
+- Spread «mecanismos» en el playground.
+
+### Cambiado
+
+- Los cantos del papel son más claros que la cara, como el alma blanca de una cartulina impresa (`EDGE_CORE`, `PAPER_CORE`). Sustituye a `EDGE_SHADE`.
+- Las hojas dejan una pequeña holgura junto al lomo (`SPINE_GAP`).
+
 ## [0.4.0] - 2026-11-25
 
 ### Añadido

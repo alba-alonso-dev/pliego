@@ -37,12 +37,18 @@ export function paperGrain(): DataTexture {
 export interface PaperMaterials {
   /** Caras de la cartulina, con grano. */
   face: MeshStandardMaterial
-  /** Cantos, algo más oscuros para que se lea el grosor. */
+  /**
+   * Cantos: el papel se imprime por una cara y al cortarlo se ve su alma
+   * blanca, así que el canto es más claro que la cara.
+   */
   edge: MeshStandardMaterial
 }
 
-/** Cuánto se oscurecen los cantos respecto a la cara. */
-export const EDGE_SHADE = 0.78
+/** Color del alma del papel, el que se ve en los cortes. */
+export const PAPER_CORE = '#f6f1e6'
+
+/** Cuánto se acerca el canto al alma blanca (0 = color de la cara, 1 = blanco). */
+export const EDGE_CORE = 0.65
 
 const cache = new Map<string, PaperMaterials>()
 
@@ -63,7 +69,7 @@ export function paperMaterials(color: string): PaperMaterials {
       normalScale: new Vector2(0.5, 0.5),
     }),
     edge: new MeshStandardMaterial({
-      color: base.clone().multiplyScalar(EDGE_SHADE),
+      color: base.clone().lerp(new Color(PAPER_CORE), EDGE_CORE),
       roughness: 1,
       metalness: 0,
     }),

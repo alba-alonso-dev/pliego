@@ -124,6 +124,7 @@ export function Book({
             front={i === 0 ? coverColor : pageColor}
             back={pageColor}
             edge={i === 0 ? coverColor : edgeColor}
+            curl={i !== 0}
           />
         ))}
 

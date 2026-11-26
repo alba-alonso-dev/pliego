@@ -110,3 +110,143 @@ body,
   color: #5a5048;
   pointer-events: none;
 }
+
+.movables {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.movables label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.movables button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #c9bfae;
+  border-radius: 999px;
+  background: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
+.movables button[aria-pressed='true'] {
+  background: #e9c46a;
+}
+
+.languages {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.4rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.languages button {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #c9bfae;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.7);
+  font: inherit;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.languages button[aria-pressed='true'] {
+  background: #3b3530;
+  color: #fffdf8;
+}
+
+.page-text {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 5.5rem;
+  z-index: 1;
+  max-width: min(22rem, 40vw);
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.7);
+}
+
+.page-text h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.15rem;
+}
+
+.page-text p {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .page-text {
+    left: 1rem;
+    right: 1rem;
+    bottom: 6.5rem;
+    max-width: none;
+  }
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  gap: 0.8rem;
+  background: #f3ede2;
+  text-align: center;
+}
+
+.loading p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.loading-bar {
+  width: min(16rem, 60vw);
+  height: 0.35rem;
+  border-radius: 999px;
+  background: #e2d8c6;
+  overflow: hidden;
+}
+
+.loading-bar > div {
+  height: 100%;
+  background: #c0614b;
+  transition: width 200ms ease;
+}
+
+@media (max-width: 640px) {
+  .languages {
+    top: 1.5rem;
+    right: 1rem;
+    bottom: auto;
+  }
+
+  .movables {
+    top: 4.5rem;
+    right: 1rem;
+    max-width: 60vw;
+  }
+
+  .hint {
+    display: none;
+  }
+}

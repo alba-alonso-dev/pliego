@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.4**: un libro pop-up de cartulina. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
+Versión **0.6**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -34,7 +34,7 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.4.0
+npm install github:alba-alonso-dev/pliego#v0.6.0
 ```
 
 ```tsx
@@ -75,6 +75,65 @@ export function App() {
 `<Paper>` acepta `width` o `height` (tamaño final), `color`, `depth` (grosor), `anchor` (`bottom` para piezas de pie, `center`) y `roughEdges` (irregularidad del borde; `false` para un borde perfecto). Cada `<path>`, `<rect>` o `<polygon>` relleno del SVG es una pieza; los huecos interiores se respetan.
 
 `<PopUp>` se coloca con `at` (profundidad de la línea de pliegue: negativo es el fondo de la página) y `x` (el lomo está en `x = 0`). Las piezas del fondo se levantan antes; `angle` es su ángulo final (90 = de pie) y `delay` cambia cuándo empiezan a subir.
+
+### Mecanismos de papel
+
+Además de `<PopUp>`, que levanta piezas sueltas con una curva, Pliego tiene **mecanismos de ingeniería de papel de verdad**: la pieza va pegada a las dos páginas y su forma la impone la apertura del libro.
+
+```tsx
+<Spread id="mecanismos">
+  <ParallelFold {...tentFold(0.14, 0.24)} at={-0.4} width={0.3} color="#c0614b" />
+  <VFold at={0.6} glueAngle={30} pieceAngle={75} color="#5b8e7d">
+    <Valley side="right">
+      <VFold glueAngle={25} pieceAngle={80} base={0.16} height={0.18} />
+    </Valley>
+  </VFold>
+  <FloatingLayer distance={0.3} height={0.1} width={0.32}>
+    <ParallelFold {...tentFold(0.08, 0.13)} width={0.22} />
+  </FloatingLayer>
+</Spread>
+```
+
+| Mecanismo         | Qué es                                                                           |
+| ----------------- | -------------------------------------------------------------------------------- |
+| `<ParallelFold>`  | Pliegue paralelo al lomo: tienda (`tentFold`) o escalón (`stepFold`)             |
+| `<VFold>`         | Pliegue en V que pone figuras de pie; `pieceAngle` debe ser al menos `glueAngle` |
+| `<FloatingLayer>` | Suelo elevado; sus hijos son mecanismos montados encima                          |
+| `<Valley side>`   | Monta mecanismos en el pliegue entre un panel y su página (V en cascada)         |
+| `<OnPanel side>`  | Pega contenido a un panel para que gire con él (pivote)                          |
+
+La base teórica (geometría y reglas de diseño) viene de Glassner (1998), Low et al. (2013) y el Museo del Papel de Georgia Tech.
+
+### Idiomas y accesibilidad
+
+```tsx
+const dictionaries = { es, en } // { [idioma]: { [idSpread]: { title, text, … }, _: { … } } }
+
+<Languages dictionaries={dictionaries} fallback="es" />
+<PageText />          {/* título y texto del spread abierto, en HTML */}
+<LanguageSwitcher />
+<LoadingScreen />
+```
+
+`useT()` da los textos en el idioma activo (`t('title')` busca en el spread abierto). `<HandDrawn src={{ es, en }}>` usa el dibujo del idioma activo. Todas las animaciones respetan `prefers-reduced-motion`.
+
+### Gestos y movibles
+
+`useGesture()` convierte un gesto sobre un objeto 3D en un progreso de 0 a 1:
+
+```tsx
+const sun = useGesture({ mode: 'drag', axis: 'y' })
+useFrame(() => arbol.current.scale.setScalar(0.4 + sun.progress()))
+return <group {...sun.bind}>{/* el sol */}</group>
+```
+
+| Movible      | Qué hace                                                                 |
+| ------------ | ------------------------------------------------------------------------ |
+| `<PullTab>`  | Lengüeta en el borde de la página; al tirar mueve sus `<Linked from to>` |
+| `<Volvelle>` | Rueda que gira al arrastrarla; `cover` añade una tapa con ventana        |
+| `<Flap>`     | Solapa que se levanta con un clic                                        |
+
+`<MovableControls>` añade, fuera del lienzo, un control HTML por cada movible del spread abierto, para manejarlos con el teclado o un lector de pantalla.
 
 Los dibujos a mano y las ilustraciones impresas se preparan como se explica en la [guía de trazos](docs/guia-trazos.md).
 
