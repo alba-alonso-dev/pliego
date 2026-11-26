@@ -1,6 +1,7 @@
 import gsap from 'gsap'
 import { turnDuration } from './math/book'
 import { prefersReducedMotion } from './motion'
+import { playPaper } from './sound'
 import { useBookStore } from './store'
 
 let tween: gsap.core.Tween | null = null
@@ -20,6 +21,8 @@ export function animateTo(target: number): void {
     setPosition(target, false)
     return
   }
+  // Una hoja que empieza a moverse suena (si el sonido está activado).
+  if (Math.abs(target - position) > 0.2) playPaper('turn')
   const proxy = { position }
   tween = gsap.to(proxy, {
     position: target,

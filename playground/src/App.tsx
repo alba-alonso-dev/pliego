@@ -6,6 +6,7 @@
   MovableControls,
   PageText,
   PliegoCanvas,
+  SoundToggle,
   useT,
 } from 'pliego'
 import { DemoBook } from './DemoBook'
@@ -38,6 +39,7 @@ export function App() {
       <PageText className="page-text" />
       <Loading />
       <LanguageSwitcher className="languages" />
+      <Sound />
       <MovableControls className="movables" />
       <Hint />
     </main>
@@ -54,4 +56,12 @@ function Hint() {
 function Loading() {
   const t = useT()
   return <LoadingScreen className="loading" label={t('loading', '_')} />
+}
+
+/** Botón de sonido con el texto en el idioma activo. */
+function Sound() {
+  const t = useT()
+  return (
+    <SoundToggle className="sound" labels={{ on: t('soundOn', '_'), off: t('soundOff', '_') }} />
+  )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useMovablesStore } from '../movables-store'
+import { playPaper } from '../sound'
 import { useBookStore } from '../store'
 
 export interface MovableControlsProps {
@@ -33,7 +34,10 @@ export function MovableControls({ className = 'pliego-movables' }: MovableContro
             key={entry.id}
             type="button"
             aria-pressed={entry.progress() > 0.5}
-            onClick={() => entry.toggle()}
+            onClick={() => {
+              playPaper('flap')
+              entry.toggle()
+            }}
           >
             {entry.label}
           </button>
