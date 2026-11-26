@@ -12,6 +12,8 @@ export interface BookState {
   turning: boolean
   /** Idioma activo, o null si el libro no tiene textos todavía. */
   lang: string | null
+  /** Dónde está la bisagra: a la izquierda (libro) o arriba (bloc, Estratos). */
+  hinge: 'left' | 'top'
 
   setIds: (ids: string[]) => void
   goTo: (page: number) => void
@@ -20,6 +22,7 @@ export interface BookState {
   prev: () => void
   setPosition: (position: number, turning: boolean) => void
   setLang: (lang: string) => void
+  setHinge: (hinge: 'left' | 'top') => void
 }
 
 /** Página (hojas pasadas) que abre el spread con ese id, o null si no existe. */
@@ -39,6 +42,7 @@ export const useBookStore = create<BookState>()((set, get) => ({
   position: 0,
   turning: false,
   lang: null,
+  hinge: 'left',
 
   setIds: (ids) => {
     const current = Math.min(get().current, ids.length)
@@ -53,6 +57,7 @@ export const useBookStore = create<BookState>()((set, get) => ({
   prev: () => get().goTo(get().current - 1),
   setPosition: (position, turning) => set({ position, turning }),
   setLang: (lang) => set({ lang }),
+  setHinge: (hinge) => set({ hinge }),
 }))
 
 /** Estado y acciones del libro para usar en componentes. */

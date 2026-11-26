@@ -9,10 +9,14 @@
   useT,
 } from 'pliego'
 import { DemoBook } from './DemoBook'
+import { EstratosBook } from './EstratosBook'
 import { en } from './locales/en'
 import { es } from './locales/es'
 
 const dictionaries = { es, en }
+
+/** `?libro=estratos` abre el libro de prueba con la bisagra arriba. */
+const estratos = new URLSearchParams(window.location.search).get('libro') === 'estratos'
 
 export function App() {
   return (
@@ -23,7 +27,7 @@ export function App() {
         <p>Motor de libros pop-up 3D · v0.6</p>
       </header>
       <PliegoCanvas className="canvas" aria-label="Un libro de cartulina sobre una mesa">
-        <DemoBook />
+        {estratos ? <EstratosBook /> : <DemoBook />}
       </PliegoCanvas>
       <BookArrows className="arrows" />
       <PageText className="page-text" />

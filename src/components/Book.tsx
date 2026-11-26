@@ -20,9 +20,14 @@ import type { SpreadProps } from './Spread'
 import { useBookNavigation, type NavigationOptions } from './useBookNavigation'
 
 export interface BookProps extends NavigationOptions {
-  /** Por ahora solo bisagra a la izquierda; "top" llega en v0.7. */
-  hinge?: 'left'
-  /** Ancho y alto de una página. */
+  /**
+   * Dónde está la bisagra: `left` (un libro) o `top` (un bloc o un
+   * calendario de pared: las hojas se pasan hacia arriba). Con `top`, en
+   * los spreads la página «derecha» es la de abajo, `x` es la distancia
+   * al lomo hacia abajo y `at` recorre el ancho de derecha a izquierda.
+   */
+  hinge?: 'left' | 'top'
+  /** Ancho y alto de una página, tal como se ven en pantalla. */
   size?: [number, number]
   /** Grosor de las tapas y de cada página. */
   thickness?: Partial<Thicknesses>
@@ -46,7 +51,8 @@ function spreadsOf(children: ReactNode): ReactElement<SpreadProps>[] {
  * lomo queda en el centro.
  */
 export function Book({
-  size = [1, 1.4],
+  hinge = 'left',
+  size: screenSize = [1, 1.4],
   thickness: thicknessProp,
   coverColor = '#b5543c',
   pageColor = '#f7f1e3',
@@ -60,6 +66,10 @@ export function Book({
   const ids = spreads.map((spread) => spread.props.id)
   const idsKey = ids.join('|')
   const count = spreads.length
+  // El libro se construye siempre con la bisagra a la izquierda; con la
+  // bisagra arriba se gira entero, así que el ancho y el alto se cruzan.
+  const size: [number, number] =
+    hinge === 'top' ? [screenSize[1], screenSize[0]] : [screenSize[0], screenSize[1]]
   const [width, height] = size
 
   const thickness = useMemo<Thicknesses>(
@@ -86,7 +96,11 @@ export function Book({
     [],
   )
 
-  useBookNavigation({ keyboard, hash, drag })
+  useEffect(() => {
+    useBookStore.getState().setHinge(hinge)
+  }, [hinge])
+
+  useBookNavigation({ keyboard, hash, drag, hinge })
 
   // Contratapa: por dentro lleva pegada una guarda del color del papel,
   // como la tapa; los cantos y la base son de tapa.
@@ -106,33 +120,36 @@ export function Book({
 
   return (
     <BookContext.Provider value={context}>
-      <group ref={body}>
-        {/* Contratapa: la base fija bajo la pila de la derecha. */}
-        <mesh
-          position={[width / 2, thickness.cover / 2, 0]}
-          material={backCover}
-          castShadow
-          receiveShadow
-        >
-          <boxGeometry args={[width, thickness.cover, height]} />
-        </mesh>
+      {/* Bisagra arriba: el mismo libro girado para que las hojas se pasen hacia el fondo. */}
+      <group rotation={[0, hinge === 'top' ? -Math.PI / 2 : 0, 0]}>
+        <group ref={body}>
+          {/* Contratapa: la base fija bajo la pila de la derecha. */}
+          <mesh
+            position={[width / 2, thickness.cover / 2, 0]}
+            material={backCover}
+            castShadow
+            receiveShadow
+          >
+            <boxGeometry args={[width, thickness.cover, height]} />
+          </mesh>
 
-        {spreads.map((spread, i) => (
-          <Leaf
-            key={spread.props.id}
-            index={i}
-            front={i === 0 ? coverColor : pageColor}
-            back={pageColor}
-            edge={i === 0 ? coverColor : edgeColor}
-            curl={i !== 0}
-          />
-        ))}
+          {spreads.map((spread, i) => (
+            <Leaf
+              key={spread.props.id}
+              index={i}
+              front={i === 0 ? coverColor : pageColor}
+              back={pageColor}
+              edge={i === 0 ? coverColor : edgeColor}
+              curl={i !== 0}
+            />
+          ))}
 
-        {spreads.map((spread, i) => (
-          <SpreadIndexContext.Provider key={spread.props.id} value={i}>
-            {spread}
-          </SpreadIndexContext.Provider>
-        ))}
+          {spreads.map((spread, i) => (
+            <SpreadIndexContext.Provider key={spread.props.id} value={i}>
+              {spread}
+            </SpreadIndexContext.Provider>
+          ))}
+        </group>
       </group>
     </BookContext.Provider>
   )

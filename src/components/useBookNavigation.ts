@@ -13,6 +13,8 @@ export interface NavigationOptions {
   hash?: boolean
   /** Arrastrar con ratón o dedo para pasar la hoja. */
   drag?: boolean
+  /** Con la bisagra arriba se arrastra en vertical y se usan ↑ ↓. */
+  hinge?: 'left' | 'top'
 }
 
 /** Fracción del ancho del lienzo que hay que arrastrar para pasar una hoja entera. */
@@ -44,6 +46,7 @@ export function useBookNavigation({
   keyboard = true,
   hash = true,
   drag = true,
+  hinge = 'left',
 }: NavigationOptions): void {
   const element = useThree((state) => state.gl.domElement)
 
@@ -58,6 +61,8 @@ export function useBookNavigation({
         ArrowRight: next,
         PageDown: next,
         ArrowLeft: prev,
+        // Con la bisagra arriba se lee hacia abajo.
+        ...(hinge === 'top' ? { ArrowDown: next, ArrowUp: prev } : {}),
         PageUp: prev,
         Home: () => goTo(0),
         End: () => goTo(ids.length),
@@ -70,7 +75,7 @@ export function useBookNavigation({
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [keyboard])
+  }, [keyboard, hinge])
 
   // Hash en la URL: al cargar, al cambiarlo a mano y al pasar página.
   useEffect(() => {
@@ -113,11 +118,11 @@ export function useBookNavigation({
 
   // Arrastre: la hoja sigue al dedo y al soltar se completa o vuelve.
   useEffect(() => {
-    if (drag) element.style.touchAction = 'pan-y'
-  }, [drag, element])
+    if (drag) element.style.touchAction = hinge === 'top' ? 'pan-x' : 'pan-y'
+  }, [drag, element, hinge])
 
   useDrag(
-    ({ first, last, movement: [mx], velocity: [vx], tap, memo, cancel }) => {
+    ({ first, last, movement: [mx, my], velocity: [vx, vy], tap, memo, cancel }) => {
       if (tap) return memo
       // Si el gesto empezó sobre una pieza interactiva, la hoja no se mueve.
       if (isGestureLocked()) {
@@ -128,17 +133,27 @@ export function useBookNavigation({
       // El arrastre parte de donde esté la hoja, aunque estuviera girando.
       if (first) stopTurn()
       const start: number = first ? position : (memo ?? position)
-      const dragged = clamp(-mx / (element.clientWidth * DRAG_WIDTH), -1, 1)
+      // Hacia delante: a la izquierda con la bisagra a la izquierda; hacia arriba con la bisagra arriba.
+      const dragged =
+        hinge === 'top'
+          ? clamp(-my / (element.clientHeight * DRAG_WIDTH), -1, 1)
+          : clamp(-mx / (element.clientWidth * DRAG_WIDTH), -1, 1)
       if (!last) {
         setPosition(clamp(start + dragged, 0, ids.length), true)
         return start
       }
       const from = Math.round(start)
-      const target = clamp(pageAfterDrag(from, dragged, vx), 0, ids.length)
+      const target = clamp(pageAfterDrag(from, dragged, hinge === 'top' ? vy : vx), 0, ids.length)
       if (target === current) animateTo(current)
       else goTo(target)
       return start
     },
-    { target: element, enabled: drag, axis: 'x', filterTaps: true, pointer: { touch: true } },
+    {
+      target: element,
+      enabled: drag,
+      axis: hinge === 'top' ? 'y' : 'x',
+      filterTaps: true,
+      pointer: { touch: true },
+    },
   )
 }
