@@ -232,3 +232,21 @@ body,
   background: #c0614b;
   transition: width 200ms ease;
 }
+
+@media (max-width: 640px) {
+  .languages {
+    top: 1.5rem;
+    right: 1rem;
+    bottom: auto;
+  }
+
+  .movables {
+    top: 4.5rem;
+    right: 1rem;
+    max-width: 60vw;
+  }
+
+  .hint {
+    display: none;
+  }
+}

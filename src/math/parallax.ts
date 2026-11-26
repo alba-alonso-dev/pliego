@@ -29,3 +29,18 @@ export function parallaxOffset(x: number, y: number, amount: number): [number, n
 export function damping(lambda: number, delta: number): number {
   return 1 - Math.exp(-lambda * delta)
 }
+
+/**
+ * Cuánto alejar la cámara para que quepa un ancho `width` (unidades del
+ * mundo) a la distancia `distance`, con un campo de visión vertical `fov`
+ * (grados) y una proporción de pantalla `aspect`. 1 = no hace falta.
+ */
+export function fitDistanceFactor(
+  width: number,
+  distance: number,
+  fov: number,
+  aspect: number,
+): number {
+  const visible = 2 * distance * Math.tan((fov * Math.PI) / 360) * aspect
+  return visible <= 0 ? 1 : Math.max(1, width / visible)
+}

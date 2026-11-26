@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { damping, parallaxOffset, REST_BETA, TILT_RANGE, tiltToPointer } from './parallax'
+import {
+  damping,
+  fitDistanceFactor,
+  parallaxOffset,
+  REST_BETA,
+  TILT_RANGE,
+  tiltToPointer,
+} from './parallax'
 
 describe('tiltToPointer', () => {
   it('el móvil en reposo equivale al puntero en el centro', () => {
@@ -30,5 +37,18 @@ describe('damping', () => {
     expect(damping(4, 0)).toBe(0)
     expect(damping(4, 1 / 30)).toBeGreaterThan(damping(4, 1 / 60))
     expect(damping(4, 10)).toBeCloseTo(1)
+  })
+})
+
+describe('fitDistanceFactor', () => {
+  it('en pantallas anchas no aleja la cámara', () => {
+    expect(fitDistanceFactor(2.2, 3.5, 40, 16 / 9)).toBe(1)
+  })
+
+  it('en un móvil en vertical la aleja lo justo para que quepa el libro', () => {
+    const factor = fitDistanceFactor(2.2, 3.5, 40, 375 / 812)
+    expect(factor).toBeGreaterThan(1)
+    const visible = 2 * 3.5 * factor * Math.tan((40 * Math.PI) / 360) * (375 / 812)
+    expect(visible).toBeCloseTo(2.2)
   })
 })
