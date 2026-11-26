@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.4.5**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
+Versión **0.5**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -34,7 +34,7 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.4.5
+npm install github:alba-alonso-dev/pliego#v0.5.0
 ```
 
 ```tsx
@@ -103,6 +103,24 @@ Además de `<PopUp>`, que levanta piezas sueltas con una curva, Pliego tiene **m
 | `<OnPanel side>`  | Pega contenido a un panel para que gire con él (pivote)                          |
 
 La base teórica (geometría y reglas de diseño) viene de Glassner (1998), Low et al. (2013) y el Museo del Papel de Georgia Tech.
+
+### Gestos y movibles
+
+`useGesture()` convierte un gesto sobre un objeto 3D en un progreso de 0 a 1:
+
+```tsx
+const sun = useGesture({ mode: 'drag', axis: 'y' })
+useFrame(() => arbol.current.scale.setScalar(0.4 + sun.progress()))
+return <group {...sun.bind}>{/* el sol */}</group>
+```
+
+| Movible      | Qué hace                                                                 |
+| ------------ | ------------------------------------------------------------------------ |
+| `<PullTab>`  | Lengüeta en el borde de la página; al tirar mueve sus `<Linked from to>` |
+| `<Volvelle>` | Rueda que gira al arrastrarla; `cover` añade una tapa con ventana        |
+| `<Flap>`     | Solapa que se levanta con un clic                                        |
+
+`<MovableControls>` añade, fuera del lienzo, un control HTML por cada movible del spread abierto, para manejarlos con el teclado o un lector de pantalla.
 
 Los dibujos a mano y las ilustraciones impresas se preparan como se explica en la [guía de trazos](docs/guia-trazos.md).
 

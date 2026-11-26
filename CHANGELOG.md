@@ -3,6 +3,18 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [0.5.0] - 2026-11-26
+
+Gestos: el libro se puede tocar.
+
+### Añadido
+
+- `useGesture()`: convierte arrastrar, mantener pulsado o hacer clic sobre un objeto 3D en un progreso de 0 a 1. Mientras dura el gesto, el arrastre de página queda en pausa.
+- Movibles: `<PullTab>` (lengüeta que mueve piezas `<Linked>`, cada una con su retardo), `<Volvelle>` (rueda con tapa y ventana) y `<Flap>` (solapa que se levanta con un clic). `useMovable()` da su progreso.
+- `<MovableControls>`: controles HTML accesibles (deslizadores y botones) para los movibles del spread abierto.
+- Las hojas se curvan al pasarlas: el borde libre se queda atrás, como el papel. Las tapas no se curvan.
+- Ejemplos en el playground: «arrastra el sol» y un spread de movibles.
+
 ## [0.4.5] - 2026-11-26
 
 Mecanismos de ingeniería de papel de verdad: la pieza va pegada a las dos páginas y su forma la impone la apertura del libro, sin animación.
