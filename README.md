@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.7**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Con la bisagra a la izquierda (un libro) o arriba (un bloc, como Estratos). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
+Versión **0.8**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Con la bisagra a la izquierda (un libro) o arriba (un bloc, como Estratos). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -34,7 +34,7 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.7.0
+npm install github:alba-alonso-dev/pliego#v0.8.0
 ```
 
 ```tsx
@@ -118,6 +118,10 @@ La base teórica (geometría y reglas de diseño) viene de Glassner (1998), Low 
 ```
 
 Con `hinge="top"` las hojas se pasan hacia arriba y se navega con ↑ ↓ o arrastrando en vertical. En los spreads, la página «derecha» es la de abajo, `x` es la distancia al lomo hacia abajo y `at` recorre el ancho. `thickness` y `edgeColor` dan a la hoja que se pasa para salir de cada spread su grosor y su franja en el canto; el último spread no tiene hoja propia (su página de abajo es la contratapa).
+
+### Sonido y compartir
+
+`<SoundToggle>` activa un sonido de papel sintetizado (apagado por defecto) y `<ShareButton>` comparte el spread abierto. Para que el enlace se vea bien al compartirlo, cada libro pone en su `index.html` las etiquetas Open Graph (`og:title`, `og:description`, `og:image` de 1200 × 630, `twitter:card`); el `index.html` del playground sirve de ejemplo.
 
 ### Idiomas y accesibilidad
 

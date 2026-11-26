@@ -26,7 +26,7 @@ export function App() {
       <Languages dictionaries={dictionaries} fallback="es" />
       <header className="title">
         <h1>Pliego</h1>
-        <p>Motor de libros pop-up 3D · v0.7</p>
+        <p>Motor de libros pop-up 3D · v0.8</p>
       </header>
       <PliegoCanvas
         className="canvas"
