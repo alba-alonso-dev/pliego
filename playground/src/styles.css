@@ -144,3 +144,29 @@ body,
 .movables button[aria-pressed='true'] {
   background: #e9c46a;
 }
+
+.languages {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.4rem;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+}
+
+.languages button {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #c9bfae;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.7);
+  font: inherit;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.languages button[aria-pressed='true'] {
+  background: #3b3530;
+  color: #fffdf8;
+}
