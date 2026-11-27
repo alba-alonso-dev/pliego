@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { ExtrudeGeometry } from 'three'
 import { paperMaterials } from '../materials/paper'
 import { hashSeed, roughenOutlines } from '../math/rough-edges'
+import { acquireGeometry, releaseGeometry } from '../paper/geometry-cache'
 import {
   fitOutlines,
   outlinesFromSvg,
@@ -57,26 +58,47 @@ export function Paper({
   seed,
   ...group
 }: PaperProps) {
+  // Piezas con la misma forma y el mismo tamaño comparten geometría.
+  const key = outlinesProp
+    ? null
+    : [
+        src ? `${hashSeed(src)}:${src.length}` : '',
+        width,
+        height,
+        anchor,
+        depth,
+        roughEdges,
+        seed,
+      ].join('|')
   const geometry = useMemo(() => {
-    const raw = outlinesProp ?? (src ? outlinesFromSvg(src) : [])
-    let fitted = fitOutlines(raw, { width, height, anchor })
-    if (roughEdges) {
-      fitted = roughenOutlines(fitted, {
-        amount: roughEdges,
-        // Dos piezas con la misma forma pero distinto tamaño no se recortan igual.
-        seed: seed ?? hashSeed(src ?? '') + Math.round((width ?? height ?? 1) * 1000),
+    const build = () => {
+      const raw = outlinesProp ?? (src ? outlinesFromSvg(src) : [])
+      let fitted = fitOutlines(raw, { width, height, anchor })
+      if (roughEdges) {
+        fitted = roughenOutlines(fitted, {
+          amount: roughEdges,
+          // Dos piezas con la misma forma pero distinto tamaño no se recortan igual.
+          seed: seed ?? hashSeed(src ?? '') + Math.round((width ?? height ?? 1) * 1000),
+        })
+      }
+      const extruded = new ExtrudeGeometry(fitted.map(shapeFromOutline), {
+        depth,
+        bevelEnabled: false,
+        curveSegments: 1,
       })
+      extruded.translate(0, 0, -depth / 2)
+      return extruded
     }
-    const extruded = new ExtrudeGeometry(fitted.map(shapeFromOutline), {
-      depth,
-      bevelEnabled: false,
-      curveSegments: 1,
-    })
-    extruded.translate(0, 0, -depth / 2)
-    return extruded
-  }, [src, outlinesProp, width, height, anchor, depth, roughEdges, seed])
+    return key ? acquireGeometry(key, build) : build()
+  }, [key, src, outlinesProp, width, height, anchor, depth, roughEdges, seed])
 
-  useEffect(() => () => geometry.dispose(), [geometry])
+  useEffect(
+    () => () => {
+      if (key) releaseGeometry(key)
+      else geometry.dispose()
+    },
+    [key, geometry],
+  )
 
   // ExtrudeGeometry: grupo 0 = caras delantera y trasera, grupo 1 = cantos.
   const material = useMemo(() => {
