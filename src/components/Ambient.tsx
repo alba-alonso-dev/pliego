@@ -1,8 +1,18 @@
 import { useFrame } from '@react-three/fiber'
 import { useRef, type ReactNode } from 'react'
-import type { Group } from 'three'
+import type { Group, Object3D } from 'three'
 import { bobOffset, spinAngle, swayAngle } from '../math/ambient'
 import { prefersReducedMotion } from '../motion'
+import { requestRender } from '../render-on-demand'
+
+/**
+ * ¿Se ve la pieza? Solo entonces su animación pide fotogramas: una pieza en
+ * un spread oculto no tiene por qué mantener el lienzo pintando.
+ */
+function shown(object: Object3D | null): boolean {
+  for (let o = object; o; o = o.parent) if (!o.visible) return false
+  return object !== null
+}
 
 interface AmbientProps {
   children?: ReactNode
@@ -23,6 +33,7 @@ export function Spin({ speed = 0.3, axis = 'z', phase = 0, children }: SpinProps
   useFrame(({ clock }) => {
     if (!group.current || prefersReducedMotion()) return
     group.current.rotation[axis] = spinAngle(clock.elapsedTime + phase, speed)
+    if (shown(group.current)) requestRender(0.1)
   })
   return <group ref={group}>{children}</group>
 }
@@ -44,6 +55,7 @@ export function Sway({ amplitude = 4, period = 3, axis = 'z', phase = 0, childre
       ? 0
       : swayAngle(clock.elapsedTime, (amplitude * Math.PI) / 180, period, phase)
     group.current.rotation[axis] = angle
+    if (!prefersReducedMotion() && shown(group.current)) requestRender(0.1)
   })
   return <group ref={group}>{children}</group>
 }
@@ -62,6 +74,7 @@ export function Bob({ amplitude = 0.012, period = 4, phase = 0, children }: BobP
     group.current.position.y = prefersReducedMotion()
       ? 0
       : bobOffset(clock.elapsedTime, amplitude, period, phase)
+    if (!prefersReducedMotion() && shown(group.current)) requestRender(0.1)
   })
   return <group ref={group}>{children}</group>
 }

@@ -1,8 +1,8 @@
-import { PerformanceMonitor } from '@react-three/drei'
 import { Canvas, useThree, type CanvasProps } from '@react-three/fiber'
 import { useEffect, useState, type ReactNode } from 'react'
 import { NoToneMapping, NeutralToneMapping, PCFShadowMap } from 'three'
 import { CameraRig } from './CameraRig'
+import { DemandLoop } from './DemandLoop'
 import { PaperEffects, type PaperEffectsProps } from './PaperEffects'
 import { PaperLights, type PaperLightsProps } from './PaperLights'
 import { Table, type TableProps } from './Table'
@@ -31,8 +31,9 @@ export interface PliegoCanvasProps extends Omit<CanvasProps, 'children' | 'camer
   /** Postprocesado (oclusión ambiental, viñeta…): `false` lo quita. */
   effects?: boolean | PaperEffectsProps
   /**
-   * Calidad adaptable: si el dispositivo no llega a unos 30 fps, baja la
-   * resolución y quita el postprocesado; si se recupera, los devuelve.
+   * Calidad adaptable: si el dispositivo no llega a unos 30 fps mientras
+   * hay animación, baja la resolución y quita el postprocesado; si se
+   * recupera, los devuelve.
    */
   adaptive?: boolean
 }
@@ -61,6 +62,9 @@ export function PliegoCanvas({
   const showEffects = Boolean(effects) && !degraded
   return (
     <Canvas
+      // Solo se dibuja cuando algo cambia (ver render-on-demand.ts); se puede
+      // cambiar con frameloop="always".
+      frameloop="demand"
       shadows={{ type: PCFShadowMap }}
       dpr={degraded ? 1 : [1, 2]}
       camera={{ position: cameraPosition, fov }}
@@ -71,15 +75,7 @@ export function PliegoCanvas({
       }}
       {...props}
     >
-      {adaptive && (
-        <PerformanceMonitor
-          bounds={() => [30, 55]}
-          onDecline={() => setDegraded(true)}
-          onIncline={() => setDegraded(false)}
-          flipflops={3}
-          onFallback={() => setDegraded(true)}
-        />
-      )}
+      <DemandLoop onDegrade={adaptive ? setDegraded : undefined} />
       <CameraRig position={cameraPosition} target={target} parallax={parallax || 0} />
       <color attach="background" args={[background]} />
       <fog attach="fog" args={[background, 4.5, 9]} />

@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import { floatingLayer } from '../math/floating-layer'
 import { DEFAULT_TAB, FoldPanel } from './FoldPanel'
 import { useEffect } from 'react'
-import { FoldFrame, MechanismRoot, useFoldSupport, warnIfOverflows } from './FoldSupport'
+import { useFoldSupport, warnIfOverflows } from './fold-context'
+import { FoldFrame, MechanismRoot } from './FoldSupport'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
 
 export interface FloatingLayerProps {

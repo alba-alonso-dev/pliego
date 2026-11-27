@@ -48,9 +48,11 @@ Guarda el SVG junto al libro e impórtalo como texto con `?raw`:
 ```tsx
 import flecha from './trazos/flecha.svg?raw'
 
-;<Spread id="colinas">
-  <HandDrawn src={flecha} x={-0.3} at={0.35} width={0.3} reveal />
-</Spread>
+const colinas = (
+  <Spread id="colinas">
+    <HandDrawn src={flecha} x={-0.3} at={0.35} width={0.3} reveal />
+  </Spread>
+)
 ```
 
 | Prop                 | Qué hace                                                                                                      |
@@ -70,7 +72,7 @@ Si el dibujo tiene texto (una nota, una etiqueta), haz una versión por idioma y
 import notaEs from './trazos/nota.es.svg?raw'
 import notaEn from './trazos/nota.en.svg?raw'
 
-;<HandDrawn src={{ es: notaEs, en: notaEn }} x={0.4} at={-0.3} width={0.35} />
+const nota = <HandDrawn src={{ es: notaEs, en: notaEn }} x={0.4} at={-0.3} width={0.35} />
 ```
 
 ## Ilustraciones impresas (`<PrintedLayer>`)

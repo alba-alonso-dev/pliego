@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { shareUrl } from '../share'
 import { useBookStore } from '../store'
 
 export interface ShareButtonProps {
@@ -8,11 +9,6 @@ export interface ShareButtonProps {
   /** Texto que acompaña al enlace. */
   text?: string
   labels?: { share: string; copied: string }
-}
-
-/** Enlace al spread abierto: la URL actual con su `#id` y su idioma. */
-export function shareUrl(): string {
-  return typeof window === 'undefined' ? '' : window.location.href
 }
 
 /**

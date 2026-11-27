@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.lib.json",
+  "out": "dist-playground/api",
+  "name": "Pliego",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "sort": ["kind", "alphabetical"],
+  "navigationLinks": {
+    "Playground": "https://alba-alonso-dev.github.io/pliego/",
+    "GitHub": "https://github.com/alba-alonso-dev/pliego"
+  },
+  "excludeExternals": true,
+  "externalPattern": ["**/node_modules/**"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "rewrittenLink": false
+  }
+}

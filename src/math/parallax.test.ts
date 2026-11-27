@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   damping,
+  fitBookFactor,
   fitDistanceFactor,
   parallaxOffset,
   REST_BETA,
@@ -50,5 +51,23 @@ describe('fitDistanceFactor', () => {
     expect(factor).toBeGreaterThan(1)
     const visible = 2 * 3.5 * factor * Math.tan((40 * Math.PI) / 360) * (375 / 812)
     expect(visible).toBeCloseTo(2.2)
+  })
+})
+
+describe('fitBookFactor', () => {
+  const elevation = Math.atan2(2.6, 2.3)
+
+  it('un libro normal cabe sin alejar la cámara en pantalla ancha', () => {
+    expect(fitBookFactor([2, 1.4], 3.5, 40, 16 / 9, elevation)).toBe(1)
+  })
+
+  it('un libro con la bisagra arriba (muy hondo) aleja la cámara', () => {
+    expect(fitBookFactor([1.4, 3.6], 3.5, 40, 16 / 9, elevation)).toBeGreaterThan(1)
+  })
+
+  it('en un móvil en vertical manda el ancho', () => {
+    expect(fitBookFactor([2, 1.4], 3.5, 40, 375 / 812, elevation)).toBeCloseTo(
+      fitDistanceFactor(2.2, 3.5, 40, 375 / 812),
+    )
   })
 })

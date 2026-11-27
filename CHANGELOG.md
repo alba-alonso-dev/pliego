@@ -3,6 +3,35 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.0.0] - 2026-11-27
+
+Versión estable: la API que exporta `pliego` queda congelada hasta la 2.0.
+
+### Añadido
+
+- Referencia de la API generada con TypeDoc y publicada en `/pliego/api/`, y guías de inicio, mecanismos, gestos e idiomas.
+- `useSpreadFrame()` y `useSpreadShown()`: un solo bucle por spread que se salta los spreads que no se ven.
+- `requestRender()`: el lienzo usa `frameloop="demand"` y solo dibuja cuando algo cambia; lo que se anima pide fotogramas mientras dura.
+- Tests que montan un libro de verdad (`@react-three/test-renderer`), además de los de la matemática.
+- `<BookArrows navLabel>` y `<MovableControls label>` para traducir sus nombres accesibles.
+
+### Cambiado
+
+- Rendimiento: de 159 a 26 actualizaciones por fotograma en el playground; cada ilustración impresa es una sola malla y cada dibujo a mano una sola línea; las piezas iguales comparten geometría; con el libro quieto no se dibuja nada.
+- La calidad adaptable mide solo mientras hay animación, así que las pausas del lienzo no se confunden con un dispositivo lento.
+- La cámara encuadra el libro abierto según su tamaño real, a lo ancho y en profundidad (útil con la bisagra arriba).
+- La pantalla de carga espera un momento antes de irse, para no parpadear.
+- El playground separa Three y las demás dependencias en archivos aparte y muestra un aviso de carga en HTML antes del JavaScript.
+
+### Corregido
+
+- Aviso por consola si una ilustración impresa no carga.
+- En el móvil, los controles del playground ya no se pisan.
+
+### Eliminado
+
+- `useSpreadTheta()` (obsoleto desde la 0.3): usa `useSpread().theta`.
+
 ## [0.8.0] - 2026-11-26
 
 Pulido.

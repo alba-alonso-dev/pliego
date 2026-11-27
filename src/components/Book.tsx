@@ -118,6 +118,13 @@ export function Book({
     useBookStore.getState().setHinge(hinge)
   }, [hinge])
 
+  // Tamaño del libro abierto sobre la mesa (ancho en pantalla, fondo), para la cámara.
+  useEffect(() => {
+    useBookStore
+      .getState()
+      .setFootprint(hinge === 'top' ? [height, width * 2] : [width * 2, height])
+  }, [hinge, width, height])
+
   useBookNavigation({ keyboard, hash, drag, hinge })
 
   // Contratapa: por dentro lleva pegada una guarda del color del papel,

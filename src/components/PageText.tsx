@@ -1,4 +1,4 @@
-import { useTexts, useT } from '../i18n/Languages'
+import { useTexts, useT } from '../i18n/store'
 import { useBookStore } from '../store'
 
 export interface PageTextProps {

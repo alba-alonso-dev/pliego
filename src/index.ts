@@ -21,7 +21,13 @@ export { Table } from './components/Table'
 export type { TableProps } from './components/Table'
 export { woodPixels } from './materials/wood'
 export type { WoodOptions } from './materials/wood'
-export { damping, parallaxOffset, tiltToPointer } from './math/parallax'
+export {
+  damping,
+  fitBookFactor,
+  fitDistanceFactor,
+  parallaxOffset,
+  tiltToPointer,
+} from './math/parallax'
 export type { PliegoCanvasProps } from './components/PliegoCanvas'
 export { HandDrawn, INK_LIFT } from './components/HandDrawn'
 export type { HandDrawnProps } from './components/HandDrawn'
@@ -35,21 +41,10 @@ export { layerShift } from './math/printed'
 export { useParallaxPointer } from './components/useParallaxPointer'
 export { ParallelFold } from './components/ParallelFold'
 export type { ParallelFoldProps } from './components/ParallelFold'
-export {
-  FoldFrame,
-  MechanismPartsContext,
-  MechanismRoot,
-  OnPanel,
-  PanelFrame,
-  useFoldSupport,
-  Valley,
-} from './components/FoldSupport'
-export type {
-  FoldFrameProps,
-  FoldSupport,
-  MechanismParts,
-  PanelPose,
-} from './components/FoldSupport'
+export { FoldFrame, MechanismRoot, OnPanel, PanelFrame, Valley } from './components/FoldSupport'
+export type { FoldFrameProps } from './components/FoldSupport'
+export { MechanismPartsContext, useFoldSupport, warnIfOverflows } from './components/fold-context'
+export type { FoldSupport, MechanismParts, PanelPose } from './components/fold-context'
 export { supportFrame } from './math/layers'
 export type { SupportFrame, SupportPose } from './math/layers'
 export { DEFAULT_TAB, FoldPanel } from './components/FoldPanel'
@@ -76,7 +71,8 @@ export { useGesture } from './components/useGesture'
 export type { Gesture, GestureOptions } from './components/useGesture'
 export { approach, dragProgress, holdStep } from './math/gesture'
 export { isGestureLocked, lockGesture, unlockGesture } from './gesture-lock'
-export { Flap, Linked, PullTab, useMovable, Volvelle } from './components/Movables'
+export { Flap, Linked, PullTab, Volvelle } from './components/Movables'
+export { useMovable } from './components/movable-context'
 export type { FlapProps, LinkedProps, PullTabProps, VolvelleProps } from './components/Movables'
 export { MovableControls } from './components/MovableControls'
 export type { MovableControlsProps } from './components/MovableControls'
@@ -84,7 +80,8 @@ export { useMovablesStore } from './movables-store'
 export type { MovableEntry } from './movables-store'
 export { linkedProgress, sectorOutline } from './math/movables'
 export { curlAmount, curlColumns, MAX_CURL } from './math/curl'
-export { LanguageSwitcher, Languages, useI18nStore, useT, useTexts } from './i18n/Languages'
+export { LanguageSwitcher, Languages } from './i18n/Languages'
+export { useI18nStore, useT, useTexts } from './i18n/store'
 export type { LanguageSwitcherProps, LanguagesProps } from './i18n/Languages'
 export { baseLang, resolveLang, translate } from './i18n/resolve'
 export type { Dictionary, LangSources } from './i18n/resolve'
@@ -95,16 +92,22 @@ export type { LoadingScreenProps } from './components/LoadingScreen'
 export { Bob, Spin, Sway } from './components/Ambient'
 export type { BobProps, SpinProps, SwayProps } from './components/Ambient'
 export { bobOffset, spinAngle, swayAngle } from './math/ambient'
-export { shareUrl, ShareButton } from './components/ShareButton'
+export { ShareButton } from './components/ShareButton'
+export { shareUrl } from './share'
 export type { ShareButtonProps } from './components/ShareButton'
 export { SoundToggle } from './components/SoundToggle'
 export type { SoundToggleProps } from './components/SoundToggle'
 export { playPaper, soundShape, useSoundStore } from './sound'
 export type { PaperSound, PaperSoundShape } from './sound'
+export { requestRender } from './render-on-demand'
+export { qualityStep } from './math/quality'
+export type { QualityState } from './math/quality'
 export { PopUp } from './components/PopUp'
 export type { PopUpProps } from './components/PopUp'
-export { Spread, useSpread, useSpreadTheta } from './components/Spread'
-export type { SpreadInfo, SpreadProps } from './components/Spread'
+export { Spread } from './components/Spread'
+export type { SpreadProps } from './components/Spread'
+export { useSpread } from './components/useSpread'
+export type { SpreadInfo } from './components/useSpread'
 export { clamp, easeInOutCubic, easeInOutSine, easeOutCubic, lerp } from './math/easing'
 export { depthDelay, elevation, MAX_DEPTH_DELAY, pivotRotationX, unfoldProgress } from './math/fold'
 export { idForPage, pageForId, useBook, useBookStore } from './store'

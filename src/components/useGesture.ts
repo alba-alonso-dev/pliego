@@ -4,6 +4,7 @@ import { lockGesture, unlockGesture } from '../gesture-lock'
 import { clamp } from '../math/easing'
 import { approach, dragProgress, holdStep } from '../math/gesture'
 import { prefersReducedMotion } from '../motion'
+import { requestRender } from '../render-on-demand'
 
 export interface GestureOptions {
   /**
@@ -89,6 +90,14 @@ export function useGesture({
     } else if (mode === 'click') {
       progress.current = approach(progress.current, target.current, delta, time)
     }
+    // Mientras la pieza se mueve, el lienzo sigue pintando fotogramas.
+    const settled =
+      mode === 'click'
+        ? progress.current === target.current
+        : mode === 'hold'
+          ? !holding.current && (release === 'stay' || progress.current === 0)
+          : true
+    if (!settled) requestRender(0.1)
   })
 
   return useMemo<Gesture>(() => {
@@ -101,10 +110,12 @@ export function useGesture({
       set: (value) => {
         progress.current = clamp(value)
         target.current = progress.current
+        requestRender(0.3)
       },
       toggle: () => {
         target.current = target.current > 0.5 ? 0 : 1
         if (mode !== 'click') progress.current = target.current
+        requestRender(0.3)
       },
       bind: {
         onPointerDown: (event) => {
@@ -114,6 +125,7 @@ export function useGesture({
             locked.current = true
             lockGesture()
           }
+          requestRender(0.3)
           if (mode === 'click') {
             target.current = target.current > 0.5 ? 0 : 1
             return

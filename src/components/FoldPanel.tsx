@@ -1,9 +1,9 @@
-import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import type { Mesh } from 'three'
 import { paperMaterials } from '../materials/paper'
 import type { Vec2 } from '../math/parallel-fold'
 import { DEFAULT_PAPER_DEPTH } from './Paper'
+import { useSpreadFrame } from './spread-frame'
 
 /** Largo por defecto de las pestañas de pegado. */
 export const DEFAULT_TAB = 0.025
@@ -38,7 +38,7 @@ export function FoldPanel({
     return [edge, edge, face, face, edge, edge]
   }, [color])
 
-  useFrame(() => {
+  useSpreadFrame(() => {
     if (!mesh.current) return
     const [[px, py], [qx, qy]] = ends()
     const length = Math.max(1e-5, Math.hypot(qx - px, qy - py))

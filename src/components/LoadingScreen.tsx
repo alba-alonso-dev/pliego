@@ -1,6 +1,9 @@
 import { useProgress } from '@react-three/drei'
 import { useEffect, useState } from 'react'
 
+/** Milisegundos de gracia antes de dar la carga por terminada. */
+const GRACE = 400
+
 export interface LoadingScreenProps {
   className?: string
   /** Texto mientras carga. */
@@ -23,9 +26,16 @@ export function LoadingScreen({
 }: LoadingScreenProps) {
   const { active, progress, total } = useProgress()
   const [gone, setGone] = useState(false)
+  // Un momento de gracia al empezar: las imágenes no empiezan a cargarse
+  // hasta que se monta el libro, y sin él la pantalla se iría y volvería.
+  const [settled, setSettled] = useState(false)
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSettled(true), GRACE)
+    return () => window.clearTimeout(timer)
+  }, [])
   // Terminado: no hay nada cargándose y, o se ha cargado todo, o no había
   // nada que cargar (un libro sin imágenes no debe quedarse en esta pantalla).
-  const done = !active && (progress >= 100 || total === 0)
+  const done = settled && !active && (progress >= 100 || total === 0)
 
   useEffect(() => {
     if (!done) return

@@ -4,6 +4,7 @@ import type { Group } from 'three'
 import { spreadSurfaceY, spreadTheta } from '../math/book'
 import { useBookStore } from '../store'
 import { SpreadIndexContext, useBookContext } from './context'
+import { SpreadFrameContext, type FrameCallback, type SpreadFrameBus } from './spread-frame'
 
 /** Por debajo de este ángulo de apertura (grados) la escena no se dibuja. */
 const HIDDEN_BELOW = 3
@@ -34,44 +35,33 @@ export function Spread({ children }: SpreadProps) {
   const { count, thickness } = useBookContext()
   const group = useRef<Group>(null)
 
-  useFrame(() => {
+  // Un solo bucle para todas las piezas del spread, y nada mientras no se ve.
+  const callbacks = useRef(new Set<{ current: FrameCallback }>())
+  const shown = useRef(0)
+  const bus = useMemo<SpreadFrameBus>(
+    () => ({
+      add: (callback) => {
+        callbacks.current.add(callback)
+        return () => callbacks.current.delete(callback)
+      },
+      shown: () => shown.current,
+    }),
+    [],
+  )
+
+  useFrame((state, delta) => {
     if (!group.current) return
     const theta = spreadTheta(useBookStore.getState().position, index, count)
-    group.current.visible = theta > HIDDEN_BELOW
+    const visible = theta > HIDDEN_BELOW
+    if (visible && !group.current.visible) shown.current++
+    group.current.visible = visible
+    if (!visible) return
+    for (const callback of callbacks.current) callback.current(state, delta)
   })
 
   return (
     <group ref={group} position={[0, spreadSurfaceY(index, count, thickness), 0]} visible={false}>
-      {children}
+      <SpreadFrameContext.Provider value={bus}>{children}</SpreadFrameContext.Provider>
     </group>
   )
-}
-
-export interface SpreadInfo {
-  /** Posición del spread en el libro (0 = el primero). */
-  index: number
-  /** Ángulo de apertura actual en grados (0–180). Léelo dentro de useFrame. */
-  theta: () => number
-  /** ¿Es el spread abierto ahora (la página de destino)? */
-  isOpen: () => boolean
-}
-
-/** Datos del spread que contiene al componente. */
-export function useSpread(): SpreadInfo {
-  const index = useContext(SpreadIndexContext)
-  const { count } = useBookContext()
-  if (index === null) throw new Error('useSpread debe usarse dentro de <Spread>')
-  return useMemo(
-    () => ({
-      index,
-      theta: () => spreadTheta(useBookStore.getState().position, index, count),
-      isOpen: () => useBookStore.getState().current === index + 1,
-    }),
-    [index, count],
-  )
-}
-
-/** @deprecated Usa `useSpread().theta`. */
-export function useSpreadTheta(): () => number {
-  return useSpread().theta
 }

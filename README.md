@@ -10,7 +10,7 @@ Cada libro se compone con piezas de cartulina en 3D que se levantan al abrir la 
 
 ## Estado
 
-Versión **0.8**: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Con la bisagra a la izquierda (un libro) o arriba (un bloc, como Estratos). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
+Versión **1.0**, estable: un libro pop-up de cartulina, con mecanismos de papel de verdad (pliegues paralelos y en V, capas y plataformas), movibles que se manejan con la mano y hojas que se curvan al pasarlas. Bilingüe y ampliable a más idiomas, con texto accesible, pantalla de carga y pensado también para móvil. Con la bisagra a la izquierda (un libro) o arriba (un bloc, como Estratos). Las piezas recortadas desde SVG se levantan por capas al abrir cada doble página y se pliegan con su hoja al pasarla. Sobre el papel hay ilustraciones impresas con parallax y trazos a mano que se dibujan solos, sobre una mesa de madera con sombras suaves.
 La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pliego/milestones).
 
 | Versión | Hito                                                  |
@@ -23,18 +23,27 @@ La hoja de ruta está en los [milestones](https://github.com/alba-alonso-dev/pli
 | v0.4.5  | Mecanismos: pliegues paralelos y en V, capas          |
 | v0.5    | Gestos: interacción con progreso 0→1                  |
 | v0.6    | Idiomas y calidad: i18n, accesibilidad, carga y móvil |
+| v0.7    | Estratos: bisagra arriba y canto de franjas           |
+| v0.8    | Pulido: hoja curvada, sonido y compartir              |
+| v1.0    | Estable: API congelada, documentación y rendimiento   |
 
 ## Libros hechos con Pliego
 
 - [Estratos](https://github.com/alba-alonso-dev/estratos): un libro que se lee hacia abajo, capa a capa, por la historia de la Tierra.
 - [Carta desde 2080](https://github.com/alba-alonso-dev/carta-2080): un pop-up solarpunk escrito desde el futuro.
 
+## Documentación
+
+- [Guía de inicio](docs/guia-inicio.md): de cero a un libro de dos páginas.
+- [Mecanismos de papel](docs/guia-mecanismos.md), [trazos e ilustraciones](docs/guia-trazos.md), [gestos y movibles](docs/guia-gestos.md), [idiomas y accesibilidad](docs/guia-idiomas.md).
+- [Referencia de la API](https://alba-alonso-dev.github.io/pliego/api/), generada a partir del código.
+
 ## Uso
 
 Se instala directamente desde GitHub, fijando una versión:
 
 ```bash
-npm install github:alba-alonso-dev/pliego#v0.8.0
+npm install github:alba-alonso-dev/pliego#v1.0.0
 ```
 
 ```tsx

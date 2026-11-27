@@ -26,6 +26,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build:playground
+      # Referencia de la API, publicada junto al playground en /api/.
+      - run: npm run docs:api
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

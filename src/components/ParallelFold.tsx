@@ -4,11 +4,11 @@ import { warnOnce } from '../warn'
 import { DEFAULT_TAB, FoldPanel } from './FoldPanel'
 import {
   MechanismPartsContext,
-  MechanismRoot,
   useFoldSupport,
   warnIfOverflows,
   type MechanismParts,
-} from './FoldSupport'
+} from './fold-context'
+import { MechanismRoot } from './FoldSupport'
 
 export interface ParallelFoldProps extends ParallelFoldSpec {
   /** Centro de la pieza a lo largo del lomo: de -alto/2 (fondo) a +alto/2 (frente). */

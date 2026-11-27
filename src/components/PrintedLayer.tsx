@@ -1,4 +1,3 @@
-import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   BufferGeometry,
@@ -18,6 +17,14 @@ import { useBookContext } from './context'
 import { useReaderTurn } from './facing'
 import { OnPage } from './OnPage'
 import { useParallaxPointer } from './useParallaxPointer'
+import { useSpreadFrame } from './spread-frame'
+import { useSpread } from './useSpread'
+import { SPINE_GAP } from './Leaf'
+import { curledPoint, pageCurl } from '../math/page-curl'
+import { prefersReducedMotion } from '../motion'
+import { requestRender } from '../render-on-demand'
+import { warnOnce } from '../warn'
+import { useBookStore } from '../store'
 
 export interface PrintedLayerProps {
   /** URL de la imagen (PNG, WebP o SVG con `width` y `height`). */
@@ -69,22 +76,28 @@ export function PrintedLayer({
   order = 0,
   opacity = 1,
 }: PrintedLayerProps) {
-  const { size } = useBookContext()
+  const { size, count } = useBookContext()
   const [pageWidth, pageHeight] = size
   const [texture, setTexture] = useState<Texture | null>(null)
 
   useEffect(() => {
     let alive = true
     let loaded: Texture | null = null
-    new TextureLoader().load(src, (map) => {
-      map.colorSpace = SRGBColorSpace
-      map.wrapS = ClampToEdgeWrapping
-      map.wrapT = ClampToEdgeWrapping
-      map.anisotropy = 8
-      loaded = map
-      if (alive) setTexture(map)
-      else map.dispose()
-    })
+    new TextureLoader().load(
+      src,
+      (map) => {
+        map.colorSpace = SRGBColorSpace
+        map.wrapS = ClampToEdgeWrapping
+        map.wrapT = ClampToEdgeWrapping
+        map.anisotropy = 8
+        loaded = map
+        requestRender(0.5)
+        if (alive) setTexture(map)
+        else map.dispose()
+      },
+      undefined,
+      () => warnOnce(`<PrintedLayer> no ha podido cargar la imagen «${src}».`),
+    )
     return () => {
       alive = false
       loaded?.dispose()
@@ -128,7 +141,7 @@ export function PrintedLayer({
   const pointer = useParallaxPointer(parallax !== 0)
   const shift = useRef<[number, number]>([0, 0])
   const [ax, az] = typeof parallax === 'number' ? [parallax, parallax] : parallax
-  useFrame((state, delta) => {
+  useSpreadFrame((state, delta) => {
     if (!texture) return
     const target = layerShift(pointer(state), [ax, az])
     const k = damping(3, Math.min(delta, 0.1))
@@ -138,28 +151,58 @@ export function PrintedLayer({
     texture.offset.set(-shift.current[0] / w, -shift.current[1] / h)
   })
 
-  // En tiras paralelas al lomo, para que la imagen siga la curva de la hoja.
-  const strips = useMemo(
-    () =>
-      printedStrips({ cx, at, width: w, height: h, turned: turn !== 0 }, STRIPS).map((strip) => {
-        const geometry = new BufferGeometry()
-        geometry.setAttribute('position', new Float32BufferAttribute(strip.positions, 3))
-        geometry.setAttribute('uv', new Float32BufferAttribute(strip.uvs, 2))
-        geometry.setIndex([0, 2, 1, 0, 3, 2])
-        geometry.computeVertexNormals()
-        return { along: strip.along, geometry }
-      }),
-    [cx, at, w, h, turn],
-  )
-  useEffect(() => () => strips.forEach((strip) => strip.geometry.dispose()), [strips])
+  // Una malla en tiras paralelas al lomo: sus vértices siguen la curva de
+  // la hoja al pasarla.
+  const geometry = useMemo(() => {
+    const strips = printedStrips({ cx, at, width: w, height: h, turned: turn !== 0 }, STRIPS)
+    const positions: number[] = []
+    const uvs: number[] = []
+    strips.forEach((strip, k) => {
+      // Vértices a, b, c, d = (x0,z0), (x1,z0), (x1,z1), (x0,z1); cada columna aporta dos.
+      positions.push(...strip.positions.slice(0, 3), ...strip.positions.slice(9, 12))
+      uvs.push(...strip.uvs.slice(0, 2), ...strip.uvs.slice(6, 8))
+      if (k === strips.length - 1) {
+        positions.push(...strip.positions.slice(3, 9))
+        uvs.push(...strip.uvs.slice(2, 6))
+      }
+    })
+    const index: number[] = []
+    for (let k = 0; k < strips.length; k++) {
+      const a = 2 * k
+      index.push(a, a + 3, a + 2, a, a + 1, a + 3)
+    }
+    const built = new BufferGeometry()
+    built.setAttribute('position', new Float32BufferAttribute(positions, 3))
+    built.setAttribute('uv', new Float32BufferAttribute(uvs, 2))
+    built.setIndex(index)
+    built.computeVertexNormals()
+    return built
+  }, [cx, at, w, h, turn])
+  const rest = useMemo(() => Float32Array.from(geometry.attributes.position!.array), [geometry])
+  useEffect(() => () => geometry.dispose(), [geometry])
+
+  const { index: spread } = useSpread()
+  const bent = useRef(0)
+  useSpreadFrame(() => {
+    const position = useBookStore.getState().position
+    const curl = pageCurl(position, spread, side, count, prefersReducedMotion())
+    if (Math.abs(curl.bend - bent.current) < 1e-4) return
+    bent.current = curl.bend
+    const attribute = geometry.attributes.position!
+    const array = attribute.array as Float32Array
+    for (let i = 0; i < array.length; i += 3) {
+      const [x, y] = curledPoint(rest[i]!, curl, pageWidth - SPINE_GAP, SPINE_GAP)
+      array[i] = x
+      array[i + 1] = y
+    }
+    attribute.needsUpdate = true
+    geometry.computeVertexNormals()
+    geometry.computeBoundingSphere()
+  })
 
   return (
-    <>
-      {strips.map((strip, i) => (
-        <OnPage key={i} side={side} lift={LAYER_GAP * (order + 1)} along={strip.along}>
-          <mesh geometry={strip.geometry} material={material} receiveShadow />
-        </OnPage>
-      ))}
-    </>
+    <OnPage side={side} lift={LAYER_GAP * (order + 1)}>
+      <mesh geometry={geometry} material={material} receiveShadow />
+    </OnPage>
   )
 }
