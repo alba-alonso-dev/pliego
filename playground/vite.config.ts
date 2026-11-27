@@ -18,5 +18,23 @@ export default defineConfig({
     emptyOutDir: true,
     // Three.js ocupa ~1 MB sin comprimir (~300 KB con gzip); es lo esperado.
     chunkSizeWarningLimit: 1500,
+    rolldownOptions: {
+      output: {
+        // Las dependencias 3D cambian poco: van en archivos aparte para que el
+        // navegador las guarde aunque cambie el libro.
+        // (El punto acepta tanto `/` como `\` en las rutas).
+        codeSplitting: {
+          groups: [
+            { name: 'three', test: /node_modules.three./, priority: 3 },
+            {
+              name: 'r3f',
+              test: /node_modules.(@react-three|postprocessing|three-stdlib|n8ao)./,
+              priority: 2,
+            },
+            { name: 'vendor', test: /node_modules./, priority: 1 },
+          ],
+        },
+      },
+    },
   },
 })

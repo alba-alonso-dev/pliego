@@ -23,7 +23,23 @@
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Aviso de carga en HTML: se ve antes de que llegue el JavaScript; React lo sustituye. -->
+    <div id="root">
+      <p
+        style="
+          position: fixed;
+          inset: 0;
+          display: grid;
+          place-content: center;
+          margin: 0;
+          background: #f3ede2;
+          color: #3b3530;
+          font-family: Georgia, serif;
+        "
+      >
+        Cargando… · Loading…
+      </p>
+    </div>
     <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
