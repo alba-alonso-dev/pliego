@@ -21,7 +21,13 @@ export { Table } from './components/Table'
 export type { TableProps } from './components/Table'
 export { woodPixels } from './materials/wood'
 export type { WoodOptions } from './materials/wood'
-export { damping, parallaxOffset, tiltToPointer } from './math/parallax'
+export {
+  damping,
+  fitBookFactor,
+  fitDistanceFactor,
+  parallaxOffset,
+  tiltToPointer,
+} from './math/parallax'
 export type { PliegoCanvasProps } from './components/PliegoCanvas'
 export { HandDrawn, INK_LIFT } from './components/HandDrawn'
 export type { HandDrawnProps } from './components/HandDrawn'

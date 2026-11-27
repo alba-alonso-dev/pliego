@@ -44,3 +44,24 @@ export function fitDistanceFactor(
   const visible = 2 * distance * Math.tan((fov * Math.PI) / 360) * aspect
   return visible <= 0 ? 1 : Math.max(1, width / visible)
 }
+
+/**
+ * Cuánto alejar la cámara para que quepa el libro abierto entero: su ancho
+ * `width` en horizontal y su fondo `depth` en vertical, visto desde una
+ * cámara que mira hacia abajo con un ángulo `elevation` (radianes) sobre
+ * la mesa. 1 = cabe sin alejarla. Deja un 10 % de margen.
+ */
+export function fitBookFactor(
+  [width, depth]: [number, number],
+  distance: number,
+  fov: number,
+  aspect: number,
+  elevation: number,
+): number {
+  const margin = 1.1
+  const byWidth = fitDistanceFactor(width * margin, distance, fov, aspect)
+  // En pantalla, el fondo del libro se ve acortado por la inclinación.
+  const visibleDepth = depth * Math.sin(elevation) * margin
+  const byDepth = fitDistanceFactor(visibleDepth, distance, fov, 1)
+  return Math.max(byWidth, byDepth)
+}

@@ -1,8 +1,9 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useLayoutEffect } from 'react'
 import { Fog } from 'three'
-import { damping, fitDistanceFactor, parallaxOffset } from '../math/parallax'
+import { damping, fitBookFactor, parallaxOffset } from '../math/parallax'
 import { prefersReducedMotion } from '../motion'
+import { useBookStore } from '../store'
 import { useParallaxPointer } from './useParallaxPointer'
 
 type Vec3 = [number, number, number]
@@ -16,10 +17,11 @@ export interface CameraRigProps {
   /** Recorrido máximo del parallax en unidades del mundo; 0 lo desactiva. */
   parallax: number
   /**
-   * Ancho que debe caber siempre en pantalla (el libro abierto). En
-   * pantallas estrechas, como un móvil en vertical, la cámara se aleja.
+   * Ancho y fondo que deben caber siempre en pantalla. Por defecto, los del
+   * libro abierto. Si no caben (un móvil en vertical, un libro con la
+   * bisagra arriba muy hondo), la cámara se aleja.
    */
-  fitWidth?: number
+  fit?: [number, number]
 }
 
 /**
@@ -27,7 +29,7 @@ export interface CameraRigProps {
  * inclinación del móvil, para que las capas del pop-up se separen.
  * Se queda quieta si el usuario prefiere reducir el movimiento.
  */
-export function CameraRig({ position, target, parallax, fitWidth = 2.3 }: CameraRigProps) {
+export function CameraRig({ position, target, parallax, fit }: CameraRigProps) {
   const camera = useThree((state) => state.camera)
   const scene = useThree((state) => state.scene)
   const aspect = useThree((state) => state.size.width / Math.max(1, state.size.height))
@@ -35,7 +37,9 @@ export function CameraRig({ position, target, parallax, fitWidth = 2.3 }: Camera
   // Alejar la cámara desde el punto al que mira si el libro no cabe de ancho.
   const fov = 'fov' in camera ? (camera as { fov: number }).fov : 40
   const distance = Math.hypot(position[0] - tx, position[1] - ty, position[2] - tz)
-  const k = fitDistanceFactor(fitWidth, distance, fov, aspect)
+  const footprint = useBookStore((state) => state.footprint)
+  const elevation = Math.atan2(position[1] - ty, Math.hypot(position[0] - tx, position[2] - tz))
+  const k = fitBookFactor(fit ?? footprint ?? [2, 1.4], distance, fov, aspect, elevation)
   const px = tx + (position[0] - tx) * k
   const py = ty + (position[1] - ty) * k
   const pz = tz + (position[2] - tz) * k
