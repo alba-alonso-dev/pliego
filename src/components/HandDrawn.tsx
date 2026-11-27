@@ -2,6 +2,7 @@ import { Line } from '@react-three/drei'
 import { useMemo, useRef, type ComponentRef } from 'react'
 import { DEFAULT_REVEAL, revealProgress, type RevealTiming } from '../math/reveal'
 import { prefersReducedMotion } from '../motion'
+import { requestRender } from '../render-on-demand'
 import {
   fitStrokes,
   pickSource,
@@ -111,6 +112,8 @@ export function HandDrawn({
     if (isOpen() && !useBookStore.getState().turning) elapsed.current += delta
     const progress = prefersReducedMotion() ? 1 : revealProgress(elapsed.current, timing)
     const drawn = Math.round(progress * total)
+    // Mientras se está dibujando, el lienzo sigue pintando fotogramas.
+    if (drawn < total && isOpen()) requestRender(0.1)
     line.current.visible = drawn > 0
     line.current.geometry.instanceCount = drawn
   })

@@ -22,6 +22,8 @@ import { useSpread } from './useSpread'
 import { SPINE_GAP } from './Leaf'
 import { curledPoint, pageCurl } from '../math/page-curl'
 import { prefersReducedMotion } from '../motion'
+import { requestRender } from '../render-on-demand'
+import { warnOnce } from '../warn'
 import { useBookStore } from '../store'
 
 export interface PrintedLayerProps {
@@ -81,15 +83,21 @@ export function PrintedLayer({
   useEffect(() => {
     let alive = true
     let loaded: Texture | null = null
-    new TextureLoader().load(src, (map) => {
-      map.colorSpace = SRGBColorSpace
-      map.wrapS = ClampToEdgeWrapping
-      map.wrapT = ClampToEdgeWrapping
-      map.anisotropy = 8
-      loaded = map
-      if (alive) setTexture(map)
-      else map.dispose()
-    })
+    new TextureLoader().load(
+      src,
+      (map) => {
+        map.colorSpace = SRGBColorSpace
+        map.wrapS = ClampToEdgeWrapping
+        map.wrapT = ClampToEdgeWrapping
+        map.anisotropy = 8
+        loaded = map
+        requestRender(0.5)
+        if (alive) setTexture(map)
+        else map.dispose()
+      },
+      undefined,
+      () => warnOnce(`<PrintedLayer> no ha podido cargar la imagen «${src}».`),
+    )
     return () => {
       alive = false
       loaded?.dispose()
