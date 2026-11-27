@@ -54,6 +54,7 @@
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@react-three/postprocessing": "^3.2.2",
+    "@react-three/test-renderer": "^9.1.1",
     "@types/node": "^24.19.4",
     "@types/react": "^19.3.2",
     "@types/react-dom": "^19.3.0",
