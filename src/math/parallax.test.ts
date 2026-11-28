@@ -66,8 +66,17 @@ describe('fitBookFactor', () => {
   })
 
   it('en un móvil en vertical manda el ancho', () => {
-    expect(fitBookFactor([2, 1.4], 3.5, 40, 375 / 812, elevation)).toBeCloseTo(
-      fitDistanceFactor(2.2, 3.5, 40, 375 / 812),
-    )
+    const k = fitBookFactor([2, 1.4], 3.5, 40, 375 / 812, elevation)
+    expect(k).toBeGreaterThan(fitDistanceFactor(2.2, 3.5, 40, 375 / 812))
+  })
+
+  it('el borde de delante, el más cercano a la cámara, cabe de ancho', () => {
+    // Como Estratos en un móvil: bisagra arriba, libro muy hondo.
+    const [width, depth] = [1.4, 1.8]
+    const aspect = 375 / 812
+    const k = fitBookFactor([width, depth], 3.3, 40, aspect, elevation)
+    const near = 3.3 * k - (depth / 2) * Math.cos(elevation)
+    const visible = 2 * near * Math.tan((40 * Math.PI) / 360) * aspect
+    expect(visible).toBeGreaterThanOrEqual(width * 1.1 - 1e-9)
   })
 })
