@@ -8,6 +8,7 @@ import { Book } from './Book'
 import { ParallelFold } from './ParallelFold'
 import { HandDrawn } from './HandDrawn'
 import { PopUp } from './PopUp'
+import { PrintedLayer } from './PrintedLayer'
 import { Spread } from './Spread'
 import { tentFold } from '../math/parallel-fold'
 import { paperMaterials } from '../materials/paper'
@@ -125,6 +126,27 @@ describe('<HandDrawn>', () => {
     }
     expect(visible(line!)).toBe(true)
     expect((line!.material as { visible: boolean }).visible).toBe(true)
+    await renderer.unmount()
+  })
+})
+
+describe('<PrintedLayer>', () => {
+  it('la capa con más order se dibuja encima, aunque se cree antes', async () => {
+    const renderer = await ReactThreeTestRenderer.create(
+      <Book keyboard={false} hash={false} drag={false}>
+        <Spread id="uno">
+          <PrintedLayer src="arriba.png" side="left" order={2} />
+          <PrintedLayer src="fondo.png" side="left" />
+        </Spread>
+      </Book>,
+    )
+    const orders = renderer.scene
+      .findAll(
+        (node) =>
+          node.type === 'Mesh' && (node.instance as Mesh).geometry?.type === 'BufferGeometry',
+      )
+      .map((node) => (node.instance as Mesh).renderOrder)
+    expect(orders).toEqual([2, 0])
     await renderer.unmount()
   })
 })
