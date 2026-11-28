@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  gutter,
   leafAngle,
+  leafPose,
   leafProgress,
   leafThickness,
   pageFrame,
@@ -133,5 +135,67 @@ describe('grosor por hoja', () => {
   it('las pilas suman los grosores reales', () => {
     // Pila derecha de la hoja 1 con 4 hojas: contratapa + hojas 2 y 3 + media hoja 1.
     expect(rightStackY(1, 4, layered)).toBeCloseTo(0.03 + 0.006 + 0.01 + 0.01)
+  })
+})
+
+describe('lomo en abanico', () => {
+  // Como Estratos: tapa fina y hojas muy gruesas.
+  const thick = { cover: 0.03, page: 0.05 }
+  const count = 4
+  const width = 1.4
+  const top = (pose: { y: number; thickness: number; angle: number }, side: 1 | -1) =>
+    pose.y + (side * Math.cos(pose.angle) * pose.thickness) / 2
+
+  it('cerrado no hay abanico: las hojas están planas', () => {
+    for (let k = 0; k < count; k++) {
+      expect(leafPose(0, k, count, thick, width).angle).toBeCloseTo(0)
+    }
+    expect(gutter(0, count, thick).squeezeRight).toBe(1)
+  })
+
+  it('abierto, la pila alta baja hacia el lomo hasta la altura de la otra', () => {
+    const g = gutter(1, count, thick)
+    expect(g.right).toBeGreaterThan(g.left)
+    expect(g.squeezeRight).toBeLessThan(1)
+    expect(g.squeezeLeft).toBe(1)
+    // Página derecha del spread abierto: la hoja 1, inclinada hacia el lomo.
+    const right = leafPose(1, 1, count, thick, width)
+    expect(right.angle).toBeGreaterThan(0)
+    // Junto al lomo, las dos páginas abiertas quedan casi a la misma altura.
+    const left = leafPose(1, 0, count, thick, width)
+    expect(top(right, 1)).toBeCloseTo(top(left, -1), 3)
+  })
+
+  it('el borde exterior de la hoja sigue a la altura de su pila', () => {
+    const pose = leafPose(1, 1, count, thick, width)
+    const outer = pose.y + Math.sin(pose.angle) * width
+    expect(outer).toBeCloseTo(rightStackY(1, count, thick), 2)
+  })
+
+  it('el spread abierto queda algo por debajo de plano, como sobre una mesa', () => {
+    const theta = spreadTheta(1, 0, count, thick, width)
+    expect(theta).toBeLessThan(180)
+    expect(theta).toBeGreaterThan(160)
+  })
+
+  it('los spreads cerrados siguen cerrados aunque sus hojas se abran en abanico', () => {
+    expect(spreadTheta(1, 1, count, thick, width)).toBeCloseTo(0)
+    expect(spreadTheta(1, 2, count, thick, width)).toBeCloseTo(0)
+  })
+
+  it('sin ancho, todo queda como antes', () => {
+    expect(spreadTheta(1, 0, count, thick)).toBeCloseTo(180)
+    expect(leafPose(1, 1, count, thick).angle).toBeCloseTo(0)
+  })
+
+  it('pasar una hoja sigue yendo de un lado a otro sin saltos', () => {
+    let previous = leafPose(1, 1, count, thick, width).angle
+    for (let i = 1; i <= 20; i++) {
+      const angle = leafPose(1 + i / 20, 1, count, thick, width).angle
+      expect(angle).toBeGreaterThanOrEqual(previous - 1e-9)
+      expect(angle - previous).toBeLessThan(0.4)
+      previous = angle
+    }
+    expect(previous).toBeGreaterThan(Math.PI - 0.3)
   })
 })

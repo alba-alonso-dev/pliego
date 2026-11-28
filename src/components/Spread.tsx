@@ -32,7 +32,7 @@ export interface SpreadProps {
 export function Spread({ children }: SpreadProps) {
   const index = useContext(SpreadIndexContext)
   if (index === null) throw new Error('<Spread> debe ser hijo directo de <Book>')
-  const { count, thickness } = useBookContext()
+  const { count, thickness, size } = useBookContext()
   const group = useRef<Group>(null)
 
   // Un solo bucle para todas las piezas del spread, y nada mientras no se ve.
@@ -51,7 +51,7 @@ export function Spread({ children }: SpreadProps) {
 
   useFrame((state, delta) => {
     if (!group.current) return
-    const theta = spreadTheta(useBookStore.getState().position, index, count)
+    const theta = spreadTheta(useBookStore.getState().position, index, count, thickness, size[0])
     const visible = theta > HIDDEN_BELOW
     if (visible && !group.current.visible) shown.current++
     group.current.visible = visible
