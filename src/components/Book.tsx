@@ -73,15 +73,21 @@ export function Book({
   const [width, height] = size
 
   // Grosor y color de canto propios de cada hoja: los de su spread (la
-  // hoja k se pasa para salir del spread k - 1).
+  // hoja k se pasa para salir del spread k - 1). Su cara de delante es la
+  // página derecha de ese spread y la de atrás, la izquierda del spread k.
   const layerKey = spreads
-    .map((s) => `${s.props.thickness ?? ''}:${s.props.edgeColor ?? ''}`)
+    .map((s) => `${s.props.thickness ?? ''}:${s.props.edgeColor ?? ''}:${s.props.pageColor ?? ''}`)
     .join('|')
   const layers = useMemo(
     () =>
-      spreads.map((_, k) => {
+      spreads.map((spread, k) => {
         const props = k > 0 ? spreads[k - 1]!.props : undefined
-        return { thickness: props?.thickness, edge: props?.edgeColor }
+        return {
+          thickness: props?.thickness,
+          edge: props?.edgeColor,
+          front: props?.pageColor,
+          back: spread.props.pageColor,
+        }
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [layerKey],
@@ -130,10 +136,12 @@ export function Book({
   // Contratapa: por dentro lleva pegada una guarda del color del papel,
   // como la tapa; los cantos y la base son de tapa.
   // Orden de materiales de BoxGeometry: +x, -x, +y, -y, +z, -z.
+  // En el último spread, su página derecha es esta guarda.
+  const lastPage = layers[count - 1]?.back ?? pageColor
   const backCover = useMemo(() => {
     const cover = paperMaterials(coverColor).face
-    return [cover, cover, paperMaterials(pageColor).face, cover, cover, cover]
-  }, [coverColor, pageColor])
+    return [cover, cover, paperMaterials(lastPage).face, cover, cover, cover]
+  }, [coverColor, lastPage])
 
   // Cerrado, el libro se desplaza para quedar centrado.
   const body = useRef<Group>(null)
@@ -162,8 +170,8 @@ export function Book({
             <Leaf
               key={spread.props.id}
               index={i}
-              front={i === 0 ? coverColor : pageColor}
-              back={pageColor}
+              front={i === 0 ? coverColor : (layers[i]?.front ?? pageColor)}
+              back={layers[i]?.back ?? pageColor}
               edge={i === 0 ? coverColor : (layers[i]?.edge ?? edgeColor)}
               curl={i !== 0}
             />

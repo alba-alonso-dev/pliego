@@ -12,7 +12,7 @@ import colina from './shapes/colina.svg?raw'
 export function EstratosBook() {
   return (
     <Book hinge="top" size={[1.4, 0.9]} coverColor="#6b5a4a">
-      <Spread id="hoy" thickness={0.03} edgeColor="#b8a17e">
+      <Spread id="hoy" thickness={0.03} edgeColor="#b8a17e" pageColor="#e3d6bd">
         <PopUp x={0.45} at={0.35}>
           <Paper src={casa} height={0.3} color="#c0614b" />
         </PopUp>

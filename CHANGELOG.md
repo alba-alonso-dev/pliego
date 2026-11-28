@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.2.0] - 2026-11-28
+
+### Añadido
+
+- `<Spread pageColor>`: color de papel propio para las dos páginas de un spread, como las capas de roca de Estratos.
+
 ## [1.1.0] - 2026-11-28
 
 ### Cambiado
