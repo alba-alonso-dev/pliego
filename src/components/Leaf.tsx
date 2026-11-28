@@ -52,7 +52,7 @@ export function Leaf({ index, front, back, edge, curl = true }: LeafProps) {
     const group = pivot.current
     if (!group) return
     const position = useBookStore.getState().position
-    const pose = leafPose(position, index, count, thickness)
+    const pose = leafPose(position, index, count, thickness, width)
     group.rotation.z = pose.angle
     group.position.y = pose.y
 

@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.1.0] - 2026-11-28
+
+### Cambiado
+
+- El lomo se abre en abanico: si una pila de hojas es más alta que la otra, sus hojas bajan hacia el lomo hasta la altura de la otra, como en un libro de verdad, y ya no queda un escalón en el medio. Se nota sobre todo con hojas gruesas, como en Estratos. Abierto, el spread queda algo por debajo de 180°; las piezas y los mecanismos siguen a sus páginas.
+
 ## [1.0.0] - 2026-11-27
 
 Versión estable: la API que exporta `pliego` queda congelada hasta la 2.0.

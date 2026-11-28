@@ -15,14 +15,14 @@ export interface SpreadInfo {
 /** Datos del spread que contiene al componente. */
 export function useSpread(): SpreadInfo {
   const index = useContext(SpreadIndexContext)
-  const { count } = useBookContext()
+  const { count, thickness, size } = useBookContext()
   if (index === null) throw new Error('useSpread debe usarse dentro de <Spread>')
   return useMemo(
     () => ({
       index,
-      theta: () => spreadTheta(useBookStore.getState().position, index, count),
+      theta: () => spreadTheta(useBookStore.getState().position, index, count, thickness, size[0]),
       isOpen: () => useBookStore.getState().current === index + 1,
     }),
-    [index, count],
+    [index, count, thickness, size],
   )
 }

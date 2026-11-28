@@ -46,7 +46,7 @@ export function OnPage({ side, lift = 0, along, children }: OnPageProps) {
   useSpreadFrame(() => {
     if (!frame.current || !surface.current || !curlGroup.current) return
     const position = useBookStore.getState().position
-    const f = pageFrame(position, index, side, count, thickness)
+    const f = pageFrame(position, index, side, count, thickness, size[0])
     frame.current.position.y = f.y - base
     frame.current.rotation.z = f.rotation
     surface.current.position.y = f.surface + lift
