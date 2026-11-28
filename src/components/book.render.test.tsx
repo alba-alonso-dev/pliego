@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { useBookStore } from '../store'
 import { Book } from './Book'
 import { ParallelFold } from './ParallelFold'
+import { HandDrawn } from './HandDrawn'
 import { PopUp } from './PopUp'
 import { Spread } from './Spread'
 import { tentFold } from '../math/parallel-fold'
@@ -92,6 +93,38 @@ describe('<Book>', () => {
       if (Math.abs(o.rotation.z - Math.PI) < 1e-3) turned = true
     })
     expect(turned).toBe(true)
+    await renderer.unmount()
+  })
+})
+
+describe('<HandDrawn>', () => {
+  it('el trazo revelado se ve: la línea y también su material', async () => {
+    const trazo =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M1 1 L9 9" fill="none" stroke="#000" /></svg>'
+    const renderer = await ReactThreeTestRenderer.create(
+      <Book keyboard={false} hash={false} drag={false}>
+        <Spread id="uno">
+          <HandDrawn src={trazo} x={-0.4} width={0.2} reveal={{ duration: 0.1, delay: 0 }} />
+        </Spread>
+      </Book>,
+    )
+    // El revelado avanza con el spread abierto (página de destino) y quieto.
+    await act(async () => {
+      useBookStore.setState({ current: 1 })
+    })
+    await open(1, renderer)
+    await renderer.advanceFrames(30, 1 / 30)
+    let line: Mesh | undefined
+    renderer.scene.instance.traverse((o) => {
+      if (o.type === 'LineSegments2') line = o as Mesh
+    })
+    expect(line).toBeDefined()
+    const visible = (o: Object3D) => {
+      for (let p: Object3D | null = o; p; p = p.parent) if (!p.visible) return false
+      return true
+    }
+    expect(visible(line!)).toBe(true)
+    expect((line!.material as { visible: boolean }).visible).toBe(true)
     await renderer.unmount()
   })
 })

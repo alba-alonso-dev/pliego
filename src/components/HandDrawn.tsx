@@ -1,5 +1,6 @@
 import { Line } from '@react-three/drei'
 import { useMemo, useRef, type ComponentRef } from 'react'
+import type { Group } from 'three'
 import { DEFAULT_REVEAL, revealProgress, type RevealTiming } from '../math/reveal'
 import { prefersReducedMotion } from '../motion'
 import { requestRender } from '../render-on-demand'
@@ -96,6 +97,8 @@ export function HandDrawn({
   // dibujado al pasar la hoja y se borra cuando el spread deja de verse.
   const { isOpen } = useSpread()
   const line = useRef<ComponentRef<typeof Line> | null>(null)
+  // La visibilidad va en un grupo: el `visible` de <Line> lo recibe su material.
+  const ink = useRef<Group>(null)
   const elapsed = useRef(0)
   const shown = useSpreadShown()
   const seen = useRef(-1)
@@ -103,7 +106,7 @@ export function HandDrawn({
     reveal === false ? null : { ...DEFAULT_REVEAL, ...(reveal === true ? {} : reveal) }
 
   useSpreadFrame((_, delta) => {
-    if (!timing || !line.current) return
+    if (!timing || !line.current || !ink.current) return
     // Si el spread ha estado oculto y vuelve a verse, se dibuja de nuevo.
     if (shown() !== seen.current) {
       seen.current = shown()
@@ -114,7 +117,7 @@ export function HandDrawn({
     const drawn = Math.round(progress * total)
     // Mientras se está dibujando, el lienzo sigue pintando fotogramas.
     if (drawn < total && isOpen()) requestRender(0.1)
-    line.current.visible = drawn > 0
+    ink.current.visible = drawn > 0
     line.current.geometry.instanceCount = drawn
   })
 
@@ -124,15 +127,16 @@ export function HandDrawn({
         {/* El dibujo se tumba sobre el papel con su parte de arriba hacia el fondo. */}
         <group rotation={[-Math.PI / 2, 0, 0]}>
           {total > 0 && (
-            <Line
-              ref={line}
-              points={segments}
-              segments
-              color={color}
-              lineWidth={lineWidth}
-              worldUnits
-              visible={!timing}
-            />
+            <group ref={ink} visible={!timing}>
+              <Line
+                ref={line}
+                points={segments}
+                segments
+                color={color}
+                lineWidth={lineWidth}
+                worldUnits
+              />
+            </group>
           )}
         </group>
       </group>

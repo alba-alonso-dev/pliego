@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.3.2] - 2026-11-28
+
+### Corregido
+
+- Los dibujos a mano con `reveal` vuelven a verse: el `visible` inicial acababa en el material de la línea y la dejaba invisible para siempre.
+
 ## [1.3.1] - 2026-11-28
 
 ### Corregido
