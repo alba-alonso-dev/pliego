@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.3.1] - 2026-11-28
+
+### Corregido
+
+- `useSpreadFrame()` y `useSpreadShown()` se exportan de verdad: la 1.0.0 los anunciaba pero no salían del paquete.
+
 ## [1.3.0] - 2026-11-28
 
 ### Añadido
