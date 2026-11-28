@@ -20,6 +20,8 @@ export interface SpreadProps {
   thickness?: number
   /** Color del canto de esa misma hoja: una franja en el corte del libro. */
   edgeColor?: string
+  /** Color del papel de las dos páginas del spread. Por defecto, el del libro. */
+  pageColor?: string
   children?: ReactNode
 }
 

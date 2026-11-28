@@ -9,6 +9,7 @@ import { ParallelFold } from './ParallelFold'
 import { PopUp } from './PopUp'
 import { Spread } from './Spread'
 import { tentFold } from '../math/parallel-fold'
+import { paperMaterials } from '../materials/paper'
 
 /** Un libro de prueba: dos spreads, uno con un pop-up y otro con una tienda. */
 function TestBook() {
@@ -91,6 +92,32 @@ describe('<Book>', () => {
       if (Math.abs(o.rotation.z - Math.PI) < 1e-3) turned = true
     })
     expect(turned).toBe(true)
+    await renderer.unmount()
+  })
+})
+
+describe('color de papel por spread', () => {
+  it('pinta las dos páginas de su spread, también la guarda de la contratapa', async () => {
+    const renderer = await ReactThreeTestRenderer.create(
+      <Book keyboard={false} hash={false} drag={false}>
+        <Spread id="uno" pageColor="#aa0000" />
+        <Spread id="dos" pageColor="#00aa00" />
+      </Book>,
+    )
+    const red = paperMaterials('#aa0000').face
+    const green = paperMaterials('#00aa00').face
+    // Orden de materiales de BoxGeometry: +x, -x, +y (delante), -y (detrás), +z, -z.
+    const faces = renderer.scene
+      .findAll((node) => node.type === 'Mesh' && Array.isArray((node.instance as Mesh).material))
+      .map((node) => (node.instance as Mesh).material as unknown[])
+    const fronts = faces.filter((m) => m[2] === red).length
+    const backs = faces.filter((m) => m[3] === red).length
+    // Spread «uno»: detrás de la tapa (izquierda) y delante de la hoja 1 (derecha).
+    expect(backs).toBe(1)
+    expect(fronts).toBe(1)
+    // Spread «dos»: detrás de la hoja 1 y la guarda de la contratapa.
+    expect(faces.filter((m) => m[3] === green).length).toBe(1)
+    expect(faces.filter((m) => m[2] === green).length).toBe(1)
     await renderer.unmount()
   })
 })
