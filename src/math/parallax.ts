@@ -59,7 +59,12 @@ export function fitBookFactor(
   elevation: number,
 ): number {
   const margin = 1.1
-  const byWidth = fitDistanceFactor(width * margin, distance, fov, aspect)
+  // El ancho tiene que caber en el borde de delante del libro, que está más
+  // cerca de la cámara que el centro y se ve más grande.
+  const halfFov = Math.tan((fov * Math.PI) / 360)
+  const nearOffset = (depth / 2) * Math.cos(elevation)
+  const needed = (width * margin) / (2 * halfFov * aspect) + nearOffset
+  const byWidth = distance <= 0 || aspect <= 0 ? 1 : Math.max(1, needed / distance)
   // En pantalla, el fondo del libro se ve acortado por la inclinación.
   const visibleDepth = depth * Math.sin(elevation) * margin
   const byDepth = fitDistanceFactor(visibleDepth, distance, fov, 1)

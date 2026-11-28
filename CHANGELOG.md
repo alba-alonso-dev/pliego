@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.3.3] - 2026-11-28
+
+### Corregido
+
+- La cámara encuadra el borde de delante del libro, que es el que más se acerca: en un móvil en vertical, un libro hondo (con la bisagra arriba) ya no se sale por los lados.
+
 ## [1.3.2] - 2026-11-28
 
 ### Corregido
