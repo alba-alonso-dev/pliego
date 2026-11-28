@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.3.0] - 2026-11-28
+
+### Añadido
+
+- `<Book cover>`: piezas pegadas sobre la tapa, por fuera. Giran con ella al abrir el libro y dejan de verse cuando queda boca abajo.
+
 ## [1.2.0] - 2026-11-28
 
 ### Añadido

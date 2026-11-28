@@ -96,6 +96,27 @@ describe('<Book>', () => {
   })
 })
 
+describe('<Book cover>', () => {
+  it('lo de la tapa se ve cerrado y deja de verse al abrir el libro', async () => {
+    const renderer = await ReactThreeTestRenderer.create(
+      <Book keyboard={false} hash={false} drag={false} cover={<mesh name="titulo" />}>
+        <Spread id="uno" />
+        <Spread id="dos" />
+      </Book>,
+    )
+    const visible = (o: Object3D) => {
+      for (let p: Object3D | null = o; p; p = p.parent) if (!p.visible) return false
+      return true
+    }
+    await open(0, renderer)
+    const titulo = find(renderer.scene.instance, 'titulo')
+    expect(visible(titulo)).toBe(true)
+    await open(1, renderer)
+    expect(visible(titulo)).toBe(false)
+    await renderer.unmount()
+  })
+})
+
 describe('color de papel por spread', () => {
   it('pinta las dos páginas de su spread, también la guarda de la contratapa', async () => {
     const renderer = await ReactThreeTestRenderer.create(

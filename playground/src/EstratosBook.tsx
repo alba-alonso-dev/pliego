@@ -11,7 +11,17 @@ import colina from './shapes/colina.svg?raw'
  */
 export function EstratosBook() {
   return (
-    <Book hinge="top" size={[1.4, 0.9]} coverColor="#6b5a4a">
+    <Book
+      hinge="top"
+      size={[1.4, 0.9]}
+      coverColor="#6b5a4a"
+      // En la tapa, una colina de cartulina pegada de plano.
+      cover={
+        <group position={[0.45, 0.002, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]}>
+          <Paper src={colina} width={0.6} color="#b8a17e" depth={0.003} />
+        </group>
+      }
+    >
       <Spread id="hoy" thickness={0.03} edgeColor="#b8a17e" pageColor="#e3d6bd">
         <PopUp x={0.45} at={0.35}>
           <Paper src={casa} height={0.3} color="#c0614b" />

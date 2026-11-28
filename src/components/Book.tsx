@@ -15,6 +15,7 @@ import { clamp } from '../math/easing'
 import { useBookStore } from '../store'
 import { animateTo } from '../turn'
 import { BookContext, SpreadIndexContext, type BookContextValue } from './context'
+import { Cover } from './Cover'
 import { Leaf } from './Leaf'
 import type { SpreadProps } from './Spread'
 import { useBookNavigation, type NavigationOptions } from './useBookNavigation'
@@ -34,6 +35,12 @@ export interface BookProps extends NavigationOptions {
   coverColor?: string
   pageColor?: string
   edgeColor?: string
+  /**
+   * Lo que va pegado sobre la tapa, por fuera: gira con ella al abrir el
+   * libro. Usa las coordenadas de un spread (el lomo en x = 0, la tapa de
+   * x = 0 a x = ancho).
+   */
+  cover?: ReactNode
   /** Hijos <Spread>, uno por doble página. */
   children?: ReactNode
 }
@@ -57,6 +64,7 @@ export function Book({
   coverColor = '#b5543c',
   pageColor = '#f7f1e3',
   edgeColor = '#e8dcc2',
+  cover,
   children,
   keyboard = true,
   hash = true,
@@ -176,6 +184,8 @@ export function Book({
               curl={i !== 0}
             />
           ))}
+
+          {cover !== undefined && count > 0 && <Cover>{cover}</Cover>}
 
           {spreads.map((spread, i) => (
             <SpreadIndexContext.Provider key={spread.props.id} value={i}>
