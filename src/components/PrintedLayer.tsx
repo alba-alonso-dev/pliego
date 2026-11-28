@@ -202,7 +202,8 @@ export function PrintedLayer({
 
   return (
     <OnPage side={side} lift={LAYER_GAP * (order + 1)}>
-      <mesh geometry={geometry} material={material} receiveShadow />
+      {/* Transparente y sin escribir profundidad: el orden de dibujo lo fija `order`. */}
+      <mesh geometry={geometry} material={material} renderOrder={order} receiveShadow />
     </OnPage>
   )
 }

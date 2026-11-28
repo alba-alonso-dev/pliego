@@ -3,6 +3,12 @@
 Todos los cambios importantes de `pliego` se anotan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y las versiones, [versionado semántico](https://semver.org/lang/es/).
 
+## [1.3.4] - 2026-11-28
+
+### Corregido
+
+- El `order` de `<PrintedLayer>` decide de verdad qué capa queda encima: ahora fija también el orden de dibujo, y una capa de fondo creada después ya no tapa a otra con más `order`.
+
 ## [1.3.3] - 2026-11-28
 
 ### Corregido
